@@ -36,6 +36,9 @@ boolean k1 = false;
 PImage img;
 //SetFieldValueExample n = new SetFieldValueExample();
 int W = 1340,H = 600;
+tab tab1;
+TextBox t1;
+TextArea t2;
 void settings(){
   
   size(W,H,P2D);
@@ -47,7 +50,19 @@ void setup(){
   BMS = new BMScontrols(this);
   BMS.begin();
   
+  tab1 = new tab(300,100,200,300,"tab1");
+  tab1.toggle = true;
+  tab1.visible = true;
+  tab1.draggable = true;
   
+  String []s = {"test","test","test"};
+  Menu menu = new Menu(10,20,100,s);
+  Dropdown dMenu = new Dropdown(10,90,100,s);
+  tab1.add(menu);
+  tab1.add(dMenu);
+  
+  t1 = new TextBox(400,200,100,40,10);
+  t2 = new TextArea(700,200,100,40,10,20);
   
 };
 
@@ -58,6 +73,9 @@ void draw(){
   text(frameRate,50,100);
   BMS.run();
   BMS.menus.get(0).items.get(2).submenu.self_toggle(1);
+  tab1.displayTab();
+  t1.draw();
+  t2.draw();
   //Reset();
   //if(mousePressed)println("bms",BMS.sliderBoxes.size());
 };
