@@ -7,7 +7,9 @@ class BMScontrols{
   boolean updated,autoSave;
   String currentMouseObject;
   Object currentObject;
-  Menu mouseObject;
+  Menu menuObject;
+  Slider sliderObject;
+  //objectSelected;
   Dropdown dropDownObject;
   String[] Lines;
   Button checkbox;
@@ -21,6 +23,7 @@ class BMScontrols{
   ArrayList<Menu> menus = new ArrayList<Menu>();
   ArrayList<tab> tabs = new ArrayList<tab>();
   Boundary bb;
+  
   //fileInput File,Folder;
   Menu menu;
   
@@ -52,7 +55,8 @@ void draw(){
 void begin(){
   //File = new fileInput();
   //Folder = new fileInput(true);
-  
+  //String []ss = {"test1","test2","test3"};
+  //sliderBox s = new sliderBox(100,100,90,10,ss);
   setupWindows();
   setupMenus();
   setupRGB();
@@ -95,11 +99,11 @@ void setupWindows(){
 void setupMenus(){
   // file----------------------------------------------
   
-  
+  //println("iugoiugoiugoiug", Sliders.size());
   String [] flabels = {"Open","Save","Grid","Plot 2D","Plot 3D","Attractor","Reset"};
-  file = new Menu(0,0,30,40,"File",flabels,0);
+  file = new Menu(20,0,30,40,"File",flabels,0);
   
-  menus.add(file);
+  BMS.menus.add(file);
   
 
   //----------------------file -----------------------------------
@@ -111,37 +115,16 @@ void setupMenus(){
   file.items.get(5).submenu = new Menu(file.items.get(5).x+file.items.get(5).w,file.items.get(5).y,100,attractor_labels,0);
   file.set_link(5);
   }
-  //-------------------------------------------------------------------
-  String [] shapesLabels = {"Line drawing","Connected Lines","Ellipse","Rectangle","Tri","Poligon","C Poligon","Bezier","Spline","none","Arc","Path Straight","Path Corner"};
-  shapes = new Menu(file.x + file.w,0,50,40,"Shapes",shapesLabels,0);
-  menus.add(shapes);
-
-  //-------------------------------------------------------------------------------------------
-  //physics------------------------------------------------------------------------
-  String [] physicsLabels = {"Physics","Gravity","Electromagnetism","Strong","Weak"};
-  physics = new Menu(shapes.x + shapes.w,0,50,40,"Physics",physicsLabels,0);
-  menus.add(physics);
-  //Map--------------------------------------------------------------------
-  
-  String []mapLabels = {"Humans","Plants","Animals","Minerals","Metals"};
-  
-  mapMenu = new Menu(physics.x+physics.w,0,40,40,"Maps",mapLabels,0);
-  menus.add(mapMenu);
-
-  //---------------------------------------------------------------------------
-  
-  String [] neuralNetworkMenuLabels = {"Open","Close","Simple"};
-  //file.horizontal = false;
-  neuralNetworkMenu = new Menu(mapMenu.x+mapMenu.w,mapMenu.y,90,40,"Neural Network",neuralNetworkMenuLabels,0);
-  menus.add(neuralNetworkMenu);
-  String [] twitterMenuLabels = {"Stream","Show Keywords","Add Keyword","Stream To File","Open Saved Stream"};
-  //file.horizontal = false;
-  twitter = new Menu(neuralNetworkMenu.x+neuralNetworkMenu.w,neuralNetworkMenu.y,60,40,"Twitter",twitterMenuLabels,0);
-  menus.add(twitter);
-  
   
   file.set(6,0);
-
+  String []ss = {"test1","test2","test3"};
+  float a = 200;
+  sliderBox s = new sliderBox(a,100,90,10,ss);
+  //sliderBoxes.add(s);
+  Slider s1 = new Slider(a,200,90,10,"test");
+  Sliders.add(s1);
+   s1 = new Slider(a,220,90,10,"test1");
+  Sliders.add(s1);
   
 };
 
@@ -182,10 +165,9 @@ void run(){
   mainFunctions();
   displayButtons();
   menuFunctions();
-  //neuralnet.run(100);
-  //bb.draw3();
-  //dd.displayDropdown();
-  //checkbox.draw();
+  sliderBoxFunctions();
+  sliderFunctions();
+  for(Menu menu : BMS.menus)menu.click();
 };
 
 void displayButtons(){
@@ -232,8 +214,8 @@ void reload(){
 void buttons(){
   
   file.self_toggle(6);
-  yes.self_Toggle();
-  no.self_Toggle();
+  yes.self_toggle();
+  no.self_toggle();
   String [] gridm = {"forward","backward","pause"};
   Menu grid = file.items.get(2).submenu;
   Menu attractor = file.items.get(5).submenu;
@@ -283,11 +265,43 @@ void buttons(){
   
 };
 
+void sliderBoxFunctions(){
+  //println("slidersize",sliderBoxes.size());
+  for(int i=0;i<sliderBoxes.size();i++){
+    
+    sliderBox s = sliderBoxes.get(i);
+    s.draw();
+    //s.tooltip.draw();
+    //for(int i=0
+    
+    //s.menu.sliderFunctions();
+    //if(mousePressed)println("sliders",sliderBoxes.size());
+    
+  }
+};
+
+void sliderFunctions(){
+  //if(mousePressed)println("sliders",Sliders.size());
+  for(int i=0;i<Sliders.size();i++){
+    
+    Slider s = Sliders.get(i);
+    s.draw();
+    s.mouseFunctions();
+    s.set(0,10);
+    //s.tooltip.draw();
+    //for(int i=0
+    
+    //s.menu.sliderFunctions();
+    //if(mousePressed)println("sliders",sliderBoxes.size());
+    
+  }
+};
+
 
 void menuFunctions(){
   
   Mcount = 0;
-  
+  //if(mousePressed)println("m size",BMS.menus.size());
   for(int i=0;i<BMS.menus.size();i++){
     
     Menu m = BMS.menus.get(i);
@@ -306,9 +320,10 @@ void menuFunctions(){
   //     }
   // }
   
+    
+  }
   if(Mcount>0)open_menus = true;
   else open_menus = false;
-  }
 };
 
 void boundariesNscenes(){

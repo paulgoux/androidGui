@@ -6,7 +6,7 @@ class Menu {
   public String label, blabel,itemLabel;
   float dx,dy;
   boolean drag = false, resize = false, slide = false, border = false, menu, menuhover = false, highlightable = true, animate, vertical, horizontal = false, dmenu;
-  boolean mdown, mup, smdown, smup, listbox, open_menu, sltoggle, free,parentRight,draggable,parentCanvas,m2down,m3down,getIndex;
+  boolean mdown, mup, smdown, smup, listbox, open_menu, sltoggle, free,parentRight,draggable,parentCanvas,m2down,m3down,getIndex,m4down,m5down,m6down;
   public boolean visible = true,show = true;
   ArrayList<Button> items = new ArrayList<Button>();
   ArrayList<Slider> sliders = new ArrayList<Slider>();
@@ -123,7 +123,7 @@ class Menu {
       a.togglebox = true;
       items.add(a);
     }
-
+    //h = hh * items.size();
     twidth = bwidth*items.size();
   };
 
@@ -445,7 +445,6 @@ class Menu {
         Button a = items.get(i);
         a.id = i;
 
-        
         if (a.parent!=null&&label==null&&!horizontal){
           a.y = a.parent.y + i * (a.h + spacing);
           a.x = a.parent.x;
@@ -486,14 +485,14 @@ class Menu {
           }}
 
         if (!slide) {
-          if (toggle==1)window = y+20*(items.size()+1);
+          if (toggle==1)window = y+h*(items.size()+1);
           else window = 0;
         } else {
           if (toggle==1) {
             window += speed;
 
             if (!horizontal) {
-              if (window>y + 20*items.size()) window = y+20*items.size();
+              if (window>y + h*items.size()) window = y+h*items.size();
             } else {
               if (window>x + a.w*items.size())window = x+a.w*items.size();
             }} else {
@@ -705,6 +704,10 @@ class Menu {
             if (window<=0) window = 0;
             
           }}
+          if(mousePressed){
+            //if(vertical)println("vert");
+            //else println("nvert");
+          }
         if (vertical) {
           
           if (y + window >= a.y){
@@ -741,6 +744,23 @@ class Menu {
       if (a.pos()) counter++;
     }
   };
+  
+  void draw4(){
+    
+    fill(255);
+    println("hishe",mouseX,mouseY);
+    for (int i=0; i<sliders.size(); i++) {
+
+        Slider a = sliders.get(i);
+        if(parentCanvas)a.mouse = mouse;
+        a.draw();
+    }
+  };
+  
+  void draw5(){
+    fill(0);
+    rect(x,y,20,20);
+  };
 
   void setBorders(Boolean a) {
     for (int i=0; i<items.size(); i++) {
@@ -753,7 +773,7 @@ class Menu {
   void logic() {
 
     mousePos = new PVector(mouseX,mouseY);
-    
+    if(mousePressed&&!pos()&&!dpos()&&!drag)m5down = true;
     if(mouse!=null) mousePos = mouse;
     //if(index>-1&&subindex==-1&&!pos()&&mousePressed)index = -1;
     if (mWindow!=null)y = sliders.get(0).valuey;
@@ -764,18 +784,16 @@ class Menu {
 
     if (toggle==1)col = hcol;
     else col = fcol;
-
     if ((pos()||toggle==1)) open_menu = true;
     else open_menu = false;
-    if (draggable&&dpos()&&mousePressed&&!drag&&!mdown) {
+    if (draggable&&dpos()&&mousePressed&&!drag&&!mdown&&!m5down) {
       mdown = true;
       drag = true;
       dx = mouseX - x;
       dy = mouseY - y;
-      //BMS.mouseObject = this;
     }
     
-    if(drag){
+    if(drag&&!m5down){
       x = mouseX - dx;
       y = mouseY - dy;
       
@@ -791,9 +809,8 @@ class Menu {
       mdown = false;
       mup = true;
       drag = false;
-      //if(BMS.mouseObject == this){
-      //  BMS.mouseObject = null;
-      //}
+      m5down = false;
+
     }
 
     if (t2>0)menuhover = true;
@@ -801,7 +818,7 @@ class Menu {
     
     if (!pos()) {
       if(toggle==1)
-        if (mousePressed&&!menu&&file.items.get(6).toggle!=1&&!menuhover&&sliders.size()==0&&index>0&&!m3down) {
+        if (mousePressed&&!menu&&!menuhover&&sliders.size()==0&&index>0&&!m3down) {
           m3down = true;
         }
         
@@ -834,7 +851,7 @@ class Menu {
           b.mouseFunctions();
           if (b.btnpos()||b.pos()||b.mdown)b.btnh = b.h+5;
           if (!b.mdown) b.btnh = b.h;
-          if (b.btnpos()||b.pos()||b.mdown)b.mouseFunctions();
+          //if (b.btnpos()||b.pos()||b.mdown)b.mouseFunctions();
         }
         
       if (sliders.size()>0&&sindex>=0&&!smdown) {
@@ -867,7 +884,10 @@ class Menu {
       if (pos()||toggle==1) {
         if (bsize<tsize+2) bsize += 0.5;
       } else if (bsize>tsize&&bsize>2)bsize -= 0.5;
-      }
+    }
+    if(!mousePressed){
+     m5down = false; 
+    }
   };
   
   void logic(PVector m) {
@@ -914,7 +934,7 @@ class Menu {
     else menuhover = false;
     
     if (!pos(mouse)) {
-      if (mousePressed&&!menu&&file.items.get(6).toggle!=1&&!menuhover&&sliders.size()==0) {
+      if (mousePressed&&!menu&&!menuhover&&sliders.size()==0) {
         toggle=0;
         subindex = -1;
         index = -1;
@@ -1062,100 +1082,109 @@ class Menu {
   
   boolean itemSelected(){
     boolean k = false;
+    //if(mousePressed)
     for(int i=0;i<items.size();i++){
       Button b = items.get(i);
       
       if(b.pos()){
         k = true;
         index = i;
-        b.draw2();
-        println("button",i);
+        if(mousePressed){
+          m4down = true;
+          //println("m4down");
+        }
+        //println("button",i);
         //break;
       }
     }
+    //if(index>-1&&items.get(index).submenu!=null){
+    //  for(int i=0;i<items.get(index).submenu.items.size();i++){
+    //    Button b = items.get(index).submenu.items.get(i);
+        
+    //    if(b.pos()){
+    //      k = true;
+    //      //index = i;
+    //      //b.draw2();
+    //      if(mousePressed){
+    //        m4down = true;
+    //        //println("m4down");
+    //      }
+    //    }
+    //  }
+    //}
+    //if(k){
+    // fill(0);
+    // rect(0,0,200,200);
+    //}
+    if(!mousePressed)m4down = false;
     return k;
   };
 
   void click() {
+    fill(250);
+    text(index,100,200);
     if (parent==null) {
-      if (pos() && mousePressed&&BMS.mouseObject==null&&!m3down) {
+      boolean k = itemSelected();
+      
+      if (pos() && mousePressed&&BMS.menuObject==null&&!m3down) {
         toggle++;
-        BMS.mouseObject = this;
+        BMS.menuObject = this;
         m3down = true;
         println("l1");
       }
-      if(pos()&&mousePressed&&toggle>0&&!m3down){
+      if (!m3down&&pos() && mousePressed&&BMS.menuObject==this&&toggle==1) {
         m3down = true;
-        //BMS.mouseObject.toggle = 0;
-        BMS.mouseObject = null;
         toggle = 0;
+        BMS.menuObject.toggle = 0;
+        BMS.menuObject.index = -1;
+        BMS.menuObject=null;
         println("l2");
       }
-      if(pos()&&mousePressed&&BMS.mouseObject!=null&&BMS.mouseObject!=this&&!m3down){
+      if(mousePressed&&k){
         m3down = true;
-        BMS.mouseObject.toggle = 0;
-        BMS.mouseObject = this;
-        toggle = 1;
-        println("l3");
       }
-      if(m3down&&!pos()&&!itemSelected()){
-        m3down = false;
-        toggle = 0;
-        if(BMS.mouseObject == this)BMS.mouseObject = null;
-        println("l4");
-      }
-      if (!m3down&&pos() && mousePressed&&BMS.mouseObject==this) {
-        m3down = true;
-        toggle = 0;
-        println("l5");
-      }
-      if(!m3down&&!pos()&&!itemSelected()&&BMS.mouseObject == this){
-        m3down = false;
-        toggle = 0;
-        BMS.mouseObject = null;
-        println("l4");
-      }
-      if(index>-1&&mousePressed){
-        if(items.get(index).submenu!=null){
-          items.get(index).submenu.draw();
+      if (!pos() && mousePressed&&BMS.menuObject==this&&index>-1) {
+        //println("p3",index);
+        if(items.get(index).submenu!=null&&!items.get(index).submenu.pos()&&!m4down){
+          m4down = true;
+          toggle = 0;
+          BMS.menuObject.toggle = 0;
+          BMS.menuObject.index = -1;
+          BMS.menuObject=null;
+          println("l3");
         }
-      }
-      if(index>-1&&!mousePressed){
-        BMS.mouseObject = null;
-        toggle = 0;
-        index = -1;
-      }
-      //if(!pos()&&toggle>0&&mousePressed&&!m3down&&BMS.mouseObject==this&&!itemSelected()){
-      //  toggle = 0;
-      //  BMS.mouseObject = null;
-      //  m3down = true;
-      //}
-      if(toggle==1&&index>0&&m3down&&!mousePressed){
-        items.get(index).toggle ++;
+        if(index>-1&&items.get(index).submenu==null&&!k&&!m4down){
+          m4down = true;
+          toggle = 0;
+          BMS.menuObject.toggle = 0;
+          BMS.menuObject.index = -1;
+          BMS.menuObject=null;
+          println("l4");
+        }
+        //if(index>-1&&items.get(index).submenu!=null&&!items.get(index).submenu.pos()&&!m3down&&!k){
+        //  m3down = true;
+        //  toggle = 0;
+        //  BMS.menuObject.toggle = 0;
+        //  BMS.menuObject.index = -1;
+        //  BMS.menuObject=null;
+        //  println("l5");
+        //}
         
-        if(items.get(index).toggle>1){
-          items.get(index).toggle = 0;
-        }
-        toggle = 0;
       }
-      if(!mousePressed){
-        m3down = false;
-      }
-      //if (toggle==2&&BMS.mouseObject==this) {
-      //  toggle = 0;
-      //  BMS.mouseObject = null;
-      //}
-    } 
-    //else if (parent.toggle==1) {
-    //  if (pos() && mousePressed&&BMS.mouseObject==null) {
-    //    toggle++;
-    //    BMS.mouseObject = this;
-    //  }
-    //  if (toggle==2&&BMS.mouseObject==this) {
-    //    toggle = 0;
-    //    BMS.mouseObject = null;
-    //  }
-    //}
+      //if(!m3down&&index==-1&&mousePressed&&BMS.menuObject==this){
+      //    m3down = true;
+      //    toggle = 0;
+      //    BMS.menuObject.toggle = 0;
+      //    //BMS.menuObject.index = -1;
+      //    BMS.menuObject=null;
+      //    println("l4");
+      //  }
+    }
+    
+    if(!mousePressed){
+      m3down = false;
+      m4down = false;
+    }
   };
 
   void click(boolean m){
@@ -1192,6 +1221,7 @@ class Menu {
   
   void toggle(int i, String b) {
     Button k = items.get(i);
+    
     //k.toggle(o, b);
     ;
   };

@@ -153,27 +153,27 @@ class Slider{
         
         tooltip.x = x+w+textWidth("0.000")+20;
         tooltip.y = y;
-        //tooltip.track();
+        tooltip.trace();
         
         //important
-        //tooltip.toggle = true;
+        tooltip.toggle = true;
         tooltip.visible = true;
         mdown = true;
         tdown = true;
       }
-      // if(!tooltip.draggable){
-      // if((!tooltip.posTab()&&!mdown&&tdown&&mousePressed)){
+       if(!tooltip.draggable){
+       if((!tooltip.posTab()&&!mdown&&tdown&&mousePressed)){
         
-      //   // tooltip.toggle = false;
-      //   // tooltip.visible = false;
-      //   mdown = true;
-      //   //tdown = false;
-      //   //cursor(ARROW);
-      // }}else 
+         tooltip.toggle = false;
+         tooltip.visible = false;
+         mdown = true;
+         tdown = false;
+         //cursor(ARROW);
+       }}else 
       if((!tooltip.posTabd()&&!mdown&&tdown&&mousePressed)&&!tooltip.posTab()){
         
-        // tooltip.toggle = false;
-        // tooltip.visible = false;
+        tooltip.toggle = false;
+        tooltip.visible = false;
         mdown = true;
         tdown = false;
         //cursor(ARROW);
@@ -214,7 +214,7 @@ class Slider{
       }}
 
     if(!mousePressed){
-      //mdown = false;
+      mdown = false;
       
       for(int i=0;i<tooltip.menus.get(0).items.size();i++){
         Button b = tooltip.menus.get(0).items.get(i);
@@ -368,9 +368,9 @@ class Slider{
          field.set(Link, true); 
          //println(field.get(Link),"update",control,Link);
     }catch (NullPointerException e) {
-      println("null");
+      println("s control; null");
     }catch (NoSuchFieldException e) {
-      println("no field: update");
+      println("s control; no field: update");
     }catch (IllegalAccessException e) {
     } 
     try{
@@ -379,9 +379,9 @@ class Slider{
          field.set(Link, a); 
          //println(field.get(Link),valuex,control,Link);
     }catch (NullPointerException e) {
-      println("null");
+      println("s control; null");
     }catch (NoSuchFieldException e) {
-      println("no field");
+      println("s control; no field");
     }catch (IllegalAccessException e) {
     } 
   };
@@ -703,13 +703,14 @@ class Slider{
   };
   
   void mouseFunctions(){
-    if(btnpos()&&mousePressed||pos()&&mousePressed){
+    if((btnpos()&&mousePressed||pos()&&mousePressed)&&BMS.sliderObject==null){
+      BMS.sliderObject = this;
       mup = false;
       mdown = true;
       toggle = true;
     }
     
-    if(mdown&&!tdown&&!parentCanvas){
+    if(mdown&&!tdown&&!parentCanvas&&BMS.sliderObject==this){
       if(bar){
         if(vertical){
         if(mouseY>y&&mouseY<y + h-1)valuex = mouseY-y;
@@ -725,11 +726,15 @@ class Slider{
         }else{
           if(mouseX>x-1&&mouseX<x + w-btnw && mouseY>y && mouseY < y + h)valuex = mouseX-x;
           if(mouseX>x+w-btnw)valuex = w-btnw;
-        }}}
+        }}
+      }
     if(mdown&&!mousePressed&&!tdown){
       
       mdown = false;
       toggle = false;
+    }
+    if(!mousePressed&&BMS.sliderObject==this){
+      BMS.sliderObject = null;
     }
   };
   

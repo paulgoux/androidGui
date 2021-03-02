@@ -71,9 +71,9 @@
     complexsub = new Menu(W-200,H-200,90,complexmenu);
     convertToPath = new Menu(mouseX,mouseY,90,convertmenu);
     connectedlMenu = new Menu(mouseX,mouseY,90,connectedlMenul);
-    settings = new sliderBox(mouseX,mouseY,90,5,settingsLabel);
-    settings.menu.draggable = false;
-    settings.tooltip.visible = false;
+    //settings = new sliderBox(mouseX,mouseY,90,5,settingsLabel);
+    //settings.menu.draggable = false;
+    //if(settings.tooltip!=null)settings.tooltip.visible = false;
     type = -1;
     
     setupPallete();

@@ -35,7 +35,7 @@ import java.lang.reflect.*;
 boolean k1 = false;
 PImage img;
 //SetFieldValueExample n = new SetFieldValueExample();
-int W = 1440,H = 600;
+int W = 1340,H = 600;
 void settings(){
   
   size(W,H,P2D);
@@ -48,16 +48,18 @@ void setup(){
   BMS.begin();
   
   
+  
 };
 
 void draw(){
   fill(255);
   //background(BMS.bgcol);
-  background(0);
+  background(50);
   text(frameRate,50,100);
   BMS.run();
+  BMS.menus.get(0).items.get(2).submenu.self_toggle(1);
   //Reset();
-  for(Menu menu : BMS.menus)menu.click();
+  //if(mousePressed)println("bms",BMS.sliderBoxes.size());
 };
 
 

@@ -6,45 +6,15 @@ class sliderBox{
   ArrayList<Slider> sliders = new ArrayList<Slider>();
   String type;
   PVector mouse,mouse2;
-  boolean vertical, horizontal = true,draggable,saved,tdown,mdown,visible = true,parentCanvas,t2down;
+  boolean vertical, horizontal = true,draggable,saved,tdown,mdown,visible = true,parentCanvas,t2down,m3down;
   Menu menu;
   Menu tooltip;
   tab parentTab;
-  //important
   //fileInput load = new fileInput();
   //fileReader read = new fileReader();
   //fileOutput save = new fileOutput();
   String savePath = null,itemLabel,label;
   
-  sliderBox(float xx, float yy,float ww,float S,int num){
-    
-    x = xx;
-    y = yy;
-    w = ww;
-    h = (10 + S) * num;
-    vspacing = S;
-    
-    menu = new Menu(x,y,w,h);
-    menu.highlightable = false;
-    menu.visible = false;
-    menu.type = 2;
-    menu.spacing = vspacing;
-    menu.vertical = false;
-    
-    for(int i=0;i<num;i++){
-      float ypos = y + (10 + S) *i;
-      Slider a =  new Slider(x ,ypos,w,10);
-      a.id = i;
-      a.bar = true;
-      a.classic = true;
-      a.parent = menu;
-      a.valuex = a.w/2;
-      sliders.add(a);
-      menu.sliders.add(a);
-    }
-    //menu.id = menus.size()-1;
-    createTooltip();
-  };
   
   sliderBox(float xx, float yy,float ww,float S,String [] Labels){
     
@@ -62,6 +32,7 @@ class sliderBox{
     menu.vertical = false;
     menu.slide = false;
     menu.draggable = true;
+    menu.show = true;
     
     for(int i=0;i<Labels.length;i++){
       float ypos = y + (10 + S) *i;
@@ -74,7 +45,11 @@ class sliderBox{
       sliders.add(a);
       menu.sliders.add(a);
     }
+    //println("hello",BMS.sliderBoxes.size());
     createTooltip();
+    
+    BMS.sliderBoxes.add(this);
+    println("sliderBox",BMS.sliderBoxes.size());
   };
   
   sliderBox(float xx, float yy,float ww,float S,String [] Labels,tab t){
@@ -198,8 +173,10 @@ class sliderBox{
     String []s1 = {"Reset All","Save","Load","Minimize"};
     tooltip = new Menu(x+w,y-30,40,s1);
     tooltip.items.get(3).toggle = 1;
-    //menu.id = menus.size()-1;
-    // menus.add(menu);
+    tooltip.id = BMS.sliderBoxes.size()-1;
+    tooltip.show = true;
+    //BMS.menus.add(tooltip);
+    //BMS.menus.add(menu);
     //BMS.sliderBoxes.add(this);
     //savePath = "sliderBox" + BMS.sliderBoxes.size();
     //save.location = "sliderBox" + BMS.sliderBoxes.size();
@@ -212,14 +189,15 @@ class sliderBox{
   };
   
   void draw(){
-    //if(visible){
-    //menu.sliderBoxP = this;
-    //if(tooltip.items.get(3).toggle!=1)
-    menu.draw();
-    if(t2down&&tooltip!=null)tooltip.draw();
-    logic();
-    drawToolTip();
-    //}
+    if(visible){
+      //menu.sliderBoxP = this;
+      //if(tooltip.items.get(3).toggle!=1)
+      menu.draw();
+      if(t2down&&tooltip!=null)
+      tooltip.draw();
+      logic();
+      drawToolTip();
+    }
   };
   
   
@@ -240,7 +218,7 @@ class sliderBox{
   };
   
   void logic(){
-    
+    if(mousePressed&&!m3down)m3down = true;
     if(menu.draggable&&menu.drag){
       if(tooltip!=null){
         tooltip.x = menu.x + menu.w;
@@ -265,6 +243,8 @@ class sliderBox{
           menu.y = y;
     }
     
+    //if(!saved&&!BMS.autoControl){
+    //  }
     if(frameCount%BMS.autoSaveTimeout==0)saved = false;
     else saved = true;
     if(mousePressed&&tooltip!=null&&tooltipPos()&&!t2down&&!mdown&&tooltip.visible){
@@ -301,6 +281,7 @@ class sliderBox{
           }}t2down = false; }
 
           if(tooltip.items.get(1).pos()&&mousePressed)save();
+          
           //important
           //if(tooltip.items.get(2).pos())load.listen1();
           
@@ -332,6 +313,7 @@ class sliderBox{
         }
         
       }}
+    
     if(frameCount%BMS.autoSaveTimeout==0)saved = false;
     else saved = true;
     if(tooltip!=null&&mousePressed&&!tdown&&!mdown&&tooltipPos(mouse)&&!t2down){
@@ -422,8 +404,8 @@ class sliderBox{
     menu.sliders.get(i).value = v;
   };
   
-  //important
   void save(){
+    //important
     //if(save.location!=null){
     //  save.checkLocation(save.location);
     //  save.open();
@@ -437,6 +419,7 @@ class sliderBox{
   };
   
   void load(){
+    //important
     //for(int i=0;i<read.text.length;i++){
     //  String s = read.text[i];
     //  Slider s1 = sliders.get(i);
@@ -568,6 +551,13 @@ class sliderBox{
       //menus.remove(menu.id);
       //menu.add(
   };
+  
+  //void draw2(){
+    
+  //  fill(255);
+  //  text("hello",100,100);
+    
+  //};
   
   
   

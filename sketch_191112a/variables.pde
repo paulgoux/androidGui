@@ -1,5 +1,5 @@
 ArrayList<Window> windows = new ArrayList<Window>();
-ArrayList<Menu> menus = new ArrayList<Menu>();
+//ArrayList<Menu> menus = new ArrayList<Menu>();
 ArrayList<Button> buttons = new ArrayList<Button>();
 ArrayList<Slider> Sliders = new ArrayList<Slider>();
 ArrayList<PImage> images = new ArrayList<PImage>();

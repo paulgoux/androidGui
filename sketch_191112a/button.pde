@@ -1265,7 +1265,7 @@ class Button{
         for(int i=0;i<c.length;i++){
            String next = c[i];
            if(next!=b){
-             println("button ",next,b," ");
+             //println("button ",next,b," ");
              try{
              field = a.getClass().getField(next); 
              field.set(a, false); 
@@ -1415,7 +1415,7 @@ class listBox{
       buttons.add(a);
       menu.items.add(a);
     }
-    menus.add(menu);
+    BMS.menus.add(menu);
   };
   
   listBox(int xx, int yy,int ww,int hh,int num){
@@ -1437,7 +1437,7 @@ class listBox{
       buttons.add(a);
       menu.items.add(a);
     }
-    menus.add(menu);
+    BMS.menus.add(menu);
   };
   
   listBox(float xx, float yy,float ww,int num,Menu m){
@@ -1459,7 +1459,7 @@ class listBox{
       buttons.add(a);
       menu.items.add(a);
     }
-    //menus.add(menu);
+    //BMS.menus.addmenu);
   };
   
   listBox(int xx, int yy,int ww,int num,Menu m){
@@ -1481,7 +1481,7 @@ class listBox{
       buttons.add(a);
       menu.items.add(a);
     }
-    //menus.add(menu);
+    //BMS.menus.addmenu);
   };
   
   listBox(float xx, float yy,float ww,int num,Menu m,String[] list){
@@ -1566,8 +1566,8 @@ class listBox{
       //menu.w = textWidth(a.label);
       menu.items.add(a);
     }
-  ////if(menu.label!=null)menus.add(menu);
-  if(menu.label!=null)menus.add(this.menu);
+  ////if(menu.label!=null)BMS.menus.addmenu);
+  if(menu.label!=null)BMS.menus.add(menu);
     
   };
   

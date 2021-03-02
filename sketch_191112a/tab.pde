@@ -512,7 +512,7 @@ void setCanvas(tab t){
     //clear();
     s.parentCanvas = true;
     tab k = states.get(0);
-    k.sliderBoxes.add(s);
+    //k.sliderBoxes.add(s);
   };
   
   PVector getMouse(){
@@ -571,7 +571,7 @@ void setCanvas(tab t){
         BMS.currentObject = this;
         
         if(title.label!=null)BMS.currentMouseObject = title.label;
-        println(BMS.currentMouseObject);
+        //println("tab",BMS.currentMouseObject);
         mdown = true;
         docked = false;
         docking = false;
