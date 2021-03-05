@@ -2,18 +2,20 @@ class sliderBox{
   
   float x,y,w,h,vspacing,hspacing;
   int id;
-  Slider sliderR,sliderB,sliderG;
+  Slider sliderR,sliderB,sliderG,sliderSelected;
   ArrayList<Slider> sliders = new ArrayList<Slider>();
   String type;
   PVector mouse,mouse2;
-  boolean vertical, horizontal = true,draggable,saved,tdown,mdown,visible = true,parentCanvas,t2down,m3down;
+  boolean vertical, horizontal = true,draggable,saved,tdown,mdown,parentCanvas,t2down,m3down,m4down;
+  public boolean visible = true,localTheme;
   Menu menu;
   Menu tooltip;
   tab parentTab;
   //fileInput load = new fileInput();
   //fileReader read = new fileReader();
-  //fileOutput save = new fileOutput();
+  fileOutput save = new fileOutput();
   String savePath = null,itemLabel,label;
+  color col = color(0, 255, 73), bcol = color(255), tcol = color(255), fcol = color(0, 255, 73), hcol = color(0, 255, 73,100),toggleCol = color(55, 84, 63);
   
   
   sliderBox(float xx, float yy,float ww,float S,String [] Labels){
@@ -45,11 +47,128 @@ class sliderBox{
       sliders.add(a);
       menu.sliders.add(a);
     }
-    //println("hello",BMS.sliderBoxes.size());
+    
     createTooltip();
     
     BMS.sliderBoxes.add(this);
-    println("sliderBox",BMS.sliderBoxes.size());
+    
+  };
+  
+  sliderBox(float xx, float yy,float ww,float S,String [] Labels,boolean bool){
+    
+    x = xx;
+    y = yy;
+    w = ww;
+    h = (10 + S) * Labels.length - S;
+    vspacing = S;
+    
+    menu = new Menu(x,y,w,h);
+    menu.highlightable = false;
+    menu.visible = false;
+    menu.type = 2;
+    menu.spacing = vspacing;
+    menu.vertical = false;
+    menu.slide = false;
+    menu.draggable = true;
+    menu.show = true;
+    
+    for(int i=0;i<Labels.length;i++){
+      float ypos = y + (10 + S) *i;
+      Slider a =  new Slider(x ,ypos,w,10,Labels[i]);
+      a.id = i;
+      a.bar = true;
+      a.classic = true;
+      a.parent = menu;
+      a.valuex = a.w/2;
+      sliders.add(a);
+      menu.sliders.add(a);
+    }
+    
+    createTooltip();
+    
+  };
+  
+  sliderBox(float xx, float yy,float ww,float S,String [] Labels,float [] values ){
+    
+    x = xx;
+    y = yy;
+    w = ww;
+    h = (10 + S) * Labels.length - S;
+    vspacing = S;
+    
+    menu = new Menu(x,y,w,h);
+    menu.highlightable = false;
+    menu.visible = false;
+    menu.type = 2;
+    menu.spacing = vspacing;
+    menu.vertical = false;
+    menu.slide = false;
+    menu.draggable = true;
+    menu.show = true;
+    
+    for(int i=0;i<Labels.length;i++){
+      float ypos = y + (10 + S) *i;
+      Slider a =  new Slider(x ,ypos,w,10,Labels[i]);
+      a.id = i;
+      a.bar = true;
+      a.classic = true;
+      a.parent = menu;
+      a.valuex = a.w/2;
+      sliders.add(a);
+      menu.sliders.add(a);
+    }
+    
+    for(int i=0;i<menu.sliders.size();i++){
+      Slider a = menu.sliders.get(i);
+      a.value = values[i];
+      a.valuex = map(a.value,0,255,0,a.w);
+    }
+    
+    createTooltip();
+    
+    BMS.sliderBoxes.add(this);
+    
+  };
+  
+  sliderBox(float xx, float yy,float ww,float S,String [] Labels,float [] values,boolean bool ){
+    
+    x = xx;
+    y = yy;
+    w = ww;
+    h = (10 + S) * Labels.length - S;
+    vspacing = S;
+    
+    menu = new Menu(x,y,w,h);
+    menu.highlightable = false;
+    menu.visible = false;
+    menu.type = 2;
+    menu.spacing = vspacing;
+    menu.vertical = false;
+    menu.slide = false;
+    menu.draggable = true;
+    menu.show = true;
+    
+    for(int i=0;i<Labels.length;i++){
+      float ypos = y + (10 + S) *i;
+      Slider a =  new Slider(x ,ypos,w,10,Labels[i]);
+      a.id = i;
+      a.bar = true;
+      a.classic = true;
+      a.parent = menu;
+      a.valuex = a.w/2;
+      sliders.add(a);
+      menu.sliders.add(a);
+    }
+    
+    for(int i=0;i<menu.sliders.size();i++){
+      Slider a = menu.sliders.get(i);
+      a.value = values[i];
+      a.valuex = map(a.value,0,255,0,a.w);
+    }
+    
+    createTooltip();
+    
+    
   };
   
   sliderBox(float xx, float yy,float ww,float S,String [] Labels,tab t){
@@ -209,6 +328,8 @@ class sliderBox{
     
     if(tdown&&tooltip!=null){
       tooltip.mouse = new PVector(mouseX-parentTab.x,mouseY-parentTab.y);
+      canvas.fill(0);
+      canvas.ellipse(tooltip.mouse.x,tooltip.mouse.y,20,20);
       tooltip.setParentCanvas(canvas);
       tooltip.draw(canvas);
     }
@@ -218,7 +339,15 @@ class sliderBox{
   };
   
   void logic(){
-    if(mousePressed&&!m3down)m3down = true;
+    if(mousePressed&&!m3down&&!pos()&&!tooltipPos()){
+      m3down = true;
+    }
+    if(mousePressed&&m3down&&(pos()||tooltipPos())){
+      m4down = true;
+    }
+    if(mousePressed&&m4down&&(!pos()&&!tooltipPos())){
+      m4down = false;
+    }
     if(menu.draggable&&menu.drag){
       if(tooltip!=null){
         tooltip.x = menu.x + menu.w;
@@ -255,8 +384,12 @@ class sliderBox{
       tdown = false;
       mdown = true;
     }
+    
     if(!mousePressed)mdown = false;
-    if(tdown&&!mousePressed)t2down = true;
+    if(!tooltipPos()&&!tooltip.pos())tdown = false;
+    if(tdown&&!mousePressed&&!m4down&&tooltipPos())t2down = true;
+    //if(tdown&&mousePressed)t2down = true;
+    
     boolean n = false;
     if(t2down){
       tdown = false;
@@ -288,13 +421,28 @@ class sliderBox{
           if(!mousePressed &&mdown) t2down = false;
 
           tooltip.toggle2(3,menu,"show");
-          if(mousePressed&&!tooltipPos())t2down = false;
+          
+          
           }
+        if(mousePressed&&!tooltipPos())t2down = false;
         
+        if(!mousePressed){
+          m3down = false;
+          if(!tooltipPos())m4down = false;
+        }
   };
 
   void logic(PGraphics canvas){
-    
+    canvas.fill(0);
+    if(mousePressed&&!m3down&&!pos(mouse)&&!tooltipPos(mouse)){
+      m3down = true;
+    }
+    if(mousePressed&&m3down&&(pos(mouse)||tooltipPos(mouse))){
+      m4down = true;
+    }
+    if(mousePressed&&m4down&&(!pos(mouse)&&!tooltipPos(mouse))){
+      m4down = false;
+    }
     if(menu.draggable&&menu.drag){
       if(tooltip!=null){
         tooltip.x = menu.x+menu.w;
@@ -316,14 +464,21 @@ class sliderBox{
     
     if(frameCount%BMS.autoSaveTimeout==0)saved = false;
     else saved = true;
-    if(tooltip!=null&&mousePressed&&!tdown&&!mdown&&tooltipPos(mouse)&&!t2down){
+    if(tooltip!=null&&mousePressed&&!tdown&&!mdown&&tooltipPos(mouse)&&!t2down&&!mdown&&tooltip.visible){
       tdown = true;
       mdown = true;
     }
-    if(tooltip!=null&&mousePressed&&tdown&&!mdown&&!tooltipPos(mouse)&&!t2down){
+    if(tooltip!=null&&mousePressed&&tdown&&!mdown&&!tooltipPos(mouse)&&!t2down&&tooltip.visible){
       tdown = false;
       mdown = true;
     }
+    
+    
+    if(!mousePressed)mdown = false;
+    if(!tooltipPos(mouse)&&!tooltip.pos(mouse))tdown = false;
+    if(tdown&&!mousePressed&&!m4down&&tooltipPos(mouse))t2down = true;
+    //if(tdown&&mousePressed)t2down = true;
+    
     if(!mousePressed)mdown = false;
     if(tdown&&!mousePressed&&!t2down)t2down = true;
     if(t2down){
@@ -364,9 +519,12 @@ class sliderBox{
   };
   
   void drawToolTip(PGraphics canvas){
-    if(tooltip!=null&&tooltipPos(mouse)&&!tdown&&!t2down&&tooltip.visible){
+    
+    if(tooltip!=null&&tooltipPos2(mouse)&&tooltip.visible&&!t2down){
       canvas.noStroke();
-      canvas.fill(0,150);
+      
+      canvas.fill(BMS.col);
+      
       canvas.rect(menu.x+menu.w,menu.y-50,50,50);
     }
   };
@@ -374,7 +532,8 @@ class sliderBox{
   void drawToolTip(){
     if(!tdown&&tooltip!=null&&tooltipPos()&&!t2down&&tooltip.visible){
       noStroke();
-      fill(0,150);
+      fill(col);
+      if(localTheme)fill(fcol);
       rect(menu.x+menu.w,menu.y-50,50,50);
     }
   };
@@ -406,16 +565,24 @@ class sliderBox{
   
   void save(){
     //important
-    //if(save.location!=null){
-    //  save.checkLocation(save.location);
-    //  save.open();
-    //  for(int i=0;i<sliders.size();i++){
+    if(save.location!=null){
+      save.checkLocation(save.location);
+      save.open();
+      for(int i=0;i<sliders.size();i++){
             
-    //      Slider s = sliders.get(i);
-    //      save.write((s.value));
-    //  }
-    //  save.close();
-    //}
+          Slider s = sliders.get(i);
+          save.write((s.value));
+      }
+      save.close();
+    }
+  };
+  
+  void setColor(){
+    for(int i=0;i<menu.sliders.size();i++){
+      Slider s = menu.sliders.get(i);
+      
+      s.setint(0,255);
+    }
   };
   
   void load(){
@@ -587,11 +754,33 @@ class sliderBox{
     return mouseX>menu.x&&mouseX<menu.x+menu.w&&mouseY>menu.y&&mouseY<menu.y+menu.w;
   }
   
+  boolean pos(PVector m){
+    return m.x>menu.x&&m.x<menu.x+menu.w&&m.y>menu.y&&m.y<menu.y+menu.w;
+  }
+  
   boolean tooltipPos(){
     return mouseX>menu.x+menu.w&&mouseX<menu.x+menu.w+50&&mouseY>menu.y-50&&mouseY<menu.y;
   };
   
   boolean tooltipPos(PVector m){
-    return m.x>menu.x+menu.w&&m.x<menu.x+menu.w+50&&m.x>menu.y-50&&m.x<menu.y;
+    //return m.x>menu.x+menu.w&&m.x<menu.x+menu.w+50&&m.x>menu.y-50&&m.x<menu.y;
+    return mouseX>menu.x+menu.w+parentTab.x&&mouseX<menu.x+menu.w+50+parentTab.x&&mouseY>menu.y-50+parentTab.y&&mouseY<menu.y+parentTab.y;
+  };
+  
+  boolean tooltipPos(PVector m,PGraphics c){
+    if(m.x>menu.x+menu.w&&m.x<menu.x+menu.w+50&&m.y>menu.y-50&&m.y<menu.y){
+    c.fill(255);
+      c.ellipse(mouse.x,mouse.y,20,20);
+  }
+    //return m.x>menu.x+menu.w&&m.x<menu.x+menu.w+50&&m.x>menu.y-50&&m.x<menu.y;
+    return mouseX>menu.x+menu.w+parentTab.x&&mouseX<menu.x+menu.w+50+parentTab.x&&mouseY>menu.y-50+parentTab.y&&mouseY<menu.y+parentTab.y;
+  };
+  
+  boolean tooltipPos2(PVector m){
+    if(m.x>menu.x+menu.w&&m.x<menu.x+menu.w+50&&m.y>menu.y-50&&m.y<menu.y){
+      
+    }
+    //return m.x>menu.x+menu.w&&m.x<menu.x+menu.w+50&&m.x>menu.y-50&&m.x<menu.y;
+    return m.x>menu.x+menu.w&&m.x<menu.x+menu.w+50&&m.y>menu.y-50&&m.y<menu.y;
   };
 };

@@ -1,14 +1,14 @@
 class Slider{
   
   int id = -1,type,functionId;
-  float x,y,w,h,valuex,valuey,btnw,btnh, value = 0,toffx,toffy,spacing = 20,tsize = 12,ssize,temp,startvalue,endvalue,start,end;
+  float x,y,w,h,valuex,valuey,btnw,btnh, value = 0,toffx,toffy,spacing = 20,tsize = 12,ssize,temp,startvalue,endvalue,start,end,r1,r2,r3,r4;
   String label,parentVar,parentBool,itemLabel;
   boolean drag,resize,border,fill = true ,toggle,visible = true,horizontal = true,vertical,matrix,classic,pie,radio,square,bar,mdown,mup,Label,right,up,down,left,tvisible = true,update = true,
           tdown,parentCanvas;
   color col = color(0);
   color col2 = color(255);
   color col3 = color(255,100);
-  color barcol = color(0,100),col4 = color(0,50),tcol = color(255),slidercol = color(255),hovercol = color(0,50);
+  color barcol = color(0,100),col4 = color(0,50),tcol = color(255),slidercol = color(255),hovercol = color(0,50),toggleCol = color(50,0);
   String control = "";
   Object Link,parentObject;
   Menu parent;
@@ -703,7 +703,7 @@ class Slider{
   };
   
   void mouseFunctions(){
-    if((btnpos()&&mousePressed||pos()&&mousePressed)&&BMS.sliderObject==null){
+    if(pos()&&mousePressed&&BMS.sliderObject==null){
       BMS.sliderObject = this;
       mup = false;
       mdown = true;

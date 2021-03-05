@@ -2,13 +2,14 @@ class Button{
   
   public float x,y,bx = x,by = y,w,h,size,textsize = 12,xoff,yoff,bsize,tsize = 12,tyoff,txoff,tmax = 2;
   int id,toggle,toggle2,type;
-  float scalew,scaleh;
+  float scalew,scaleh,r1,r2,r3,r4;
   
   public String label,blabel;
   PImage img;
   boolean drag,resize, radio,update,border = true,vertical,horizontal,gif,Img,value,textright,textbtm,textleft,textup,texttoggle,animate = true,toggleb,mdown,sdown,visible = true
           ,up,right,down,togglebar,togglebox,mdown2,textcheck,parentCanvas,subLeft,click,mclick,m2down,toggle_;
-  color fcol = color(255,80),bcol = color(0,100),hcol = color(255,50),col = fcol,tcol = color(255),col1 = fcol;
+  public boolean localTheme;
+  color fcol = color(255,80),bcol = color(0,100),hcol = color(255,50),col = fcol,tcol = color(255),col1 = fcol,toggleCol = color(50,0);
   Menu parent;
   Menu submenu;
   Window subwindow;
@@ -96,7 +97,9 @@ class Button{
   };
   
   void draw2(){
-    fill(0);
+    fill(BMS.bcol);
+    if(localTheme);
+    fill(bcol);
     rect(x,y,w,h);
   };
   
@@ -109,11 +112,14 @@ class Button{
         x = parent.x;
         //y = parent.y;
       }
-      
-      fill(50);
-      rect(x,y,w,h);
+      fill(BMS.bcol);
+      if(localTheme);
+      fill(bcol);
+      rect(x,y,w-1,h-1,r1,r2,r3,r4);
+      fill(BMS.col);
+      if(localTheme);
       fill(col);
-      rect(x ,y,w,h);
+      rect(x ,y,w,h,r1,r2,r3,r4);
       
       textSize(textsize);
       
@@ -129,7 +135,8 @@ class Button{
         translate(x*scalew,0);
         scale(scalew,1);
       }
-      
+        fill(BMS.tcol);
+        if(localTheme);
         fill(tcol);
         textSize(bsize);
         // if(!textbtm&&!textright&&!textup)text(label,x+5+txoff,y+13+tyoff+5);
@@ -179,26 +186,41 @@ class Button{
     btn();
     if(radio){
       fill(0);
-      stroke(col);
+      stroke(0);
+      fill(col);
+      if(localTheme);
+      fill(fcol);
       if(!border)noStroke();
       
       if(w>h){
+      fill(255);
+      rect(x +textWidth(label)+20,y,w,h,r1,r2,r3,r4);
+      fill(col);
+      if(localTheme);
       fill(fcol);
-      rect(x +textWidth(label)+20,y,w,h);
+      rect(x +textWidth(label)+20,y,w,h,r1,r2,r3,r4);
       if(label!=null){
         textSize(tsize);
         if(up)text(label,x,y-3);
-        if(right)text(label,x+w+2,y);
-        if(down)text(label,x,y+tsize*2+2);
+        if(right)text(label,x+w+2+ txoff,y+ tyoff);
+        if(down)text(label,x+ txoff,y+tsize*2+2+ tyoff);
         else text(label,x +5 + txoff,y + tsize + tyoff);
         textSize(12);
       }
-      fill(bcol);if(toggle==1)fill(255);
+      fill(col);
+      if(localTheme);
+      fill(fcol);
+      if(toggle==1)fill(255);
+      
       ellipse(x+w/2 +textWidth(label)+20,y+h/2,w-8,h-8);
     }
     else if(w==h){
+      //fill(255);
+      //rect(x + textWidth(label)+5,y,w,h,r1,r2,r3,r4);
+      fill(col);
+      if(localTheme);
       fill(fcol);
-      rect(x + textWidth(label)+5,y,w,h);
+      rect(x + textWidth(label)+5,y,w,h,r1,r2,r3,r4);
       if(label!=null){
         textSize(tsize);
         if(up)text(label,x,y-3);
@@ -207,18 +229,25 @@ class Button{
         else text(label,x + 5 +txoff,y+w/2+tsize/2+tyoff);
         textSize(12);
       }
-      fill(bcol);if(toggle==1)fill(255);
+      fill(col);
+      if(localTheme);
+      fill(fcol);
+      if(toggle==1)fill(255);
       ellipse(x+w/2 + textWidth(label)+5,y+h/2,w-8,h-8);
     }}
     
     else if(togglebar){
       fill(0);
-      stroke(col);
+      stroke(BMS.col);
       if(!border)noStroke();
       
       if(w>h){
+      fill(255);
+      rect(x + textWidth(label)+5,y,w,h,r1,r2,r3,r4);
+      fill(col);
+      if(localTheme);
       fill(fcol);
-      rect(x + textWidth(label)+5,y,w,h);
+      rect(x + textWidth(label)+5,y,w,h,r1,r2,r3,r4);
       if(label!=null){
         textSize(tsize);
         if(up)text(label,x,y-3);
@@ -227,13 +256,19 @@ class Button{
         else text(label,x + 5 + txoff,y+tsize + tyoff + 4);
         textSize(12);
       }
-      fill(bcol);
-      if(toggle==0){rect(x +textWidth(label)+5+ w/2,y,w/2,h);text("OFF",x+textWidth(label)+w+10+txoff,y+tsize+tyoff+4);}
-      else{ rect(x+textWidth(label)+5,y,w/2,h);text("ON",x+textWidth(label)+w+10+txoff,y+tsize+tyoff+4);}
+      fill(col);
+      if(localTheme);
+      fill(fcol);
+      if(toggle==0){rect(x +textWidth(label)+5+ w/2,y,w/2,h,r1,r2,r3,r4);text("OFF",x+textWidth(label)+w+10+txoff,y+tsize+tyoff+4);}
+      else{ rect(x+textWidth(label)+5,y,w/2,h,r1,r2,r3,r4);text("ON",x+textWidth(label)+w+10+txoff,y+tsize+tyoff+4);}
     }
     else{
+      //fill(255);
+      //rect(x + textWidth(label),y,w,h,r1,r2,r3,r4);
+      fill(col);
+      if(localTheme);
       fill(fcol);
-      rect(x+textWidth(label),y,w,h);
+      rect(x+textWidth(label),y,w,h,r1,r2,r3,r4);
       if(label!=null){
         textSize(tsize);
         if(up)text(label,x,y-3);
@@ -242,21 +277,26 @@ class Button{
         else text(label,x + 5 +txoff,y+w/2+tsize/2+tyoff);
         textSize(12);
       }
+      fill(col);
+      if(localTheme);
       fill(fcol);
-      if(toggle==0){rect(x+textWidth(label)+h/2,y,w,h/2);text("OFF",x+textWidth(label)+txoff,y+h+2+tyoff+4);}
-      else{ rect(x + textWidth(label),y,w,h/2);text("ON",x+textWidth(label)+txoff,y+h+2+tyoff+4);}
+      if(toggle==0){rect(x+textWidth(label)+h/2,y,w,h/2,r1,r2,r3,r4);text("OFF",x+textWidth(label)+txoff,y+h+2+tyoff+4);}
+      else{ rect(x + textWidth(label),y,w,h/2,r1,r2,r3,r4);text("ON",x+textWidth(label)+txoff,y+h+2+tyoff+4);}
     }}
 
     else if(togglebox){
       fill(0);
-      stroke(col);
+      stroke(BMS.col);
       if(!border)noStroke();
       
       if(w>h){
-      fill(fcol,0);
-      if(toggle==1)fill(bcol);
-      rect(x,y,w,h);
+      //  fill(255);
+      //rect(x,y,w,h,r1,r2,r3,r4);
+      fill(col);
+      rect(x,y,w,h,r1,r2,r3,r4);
       if(label!=null){
+        fill(BMS.tcol);
+        if(localTheme);
         fill(tcol);
         textSize(tsize);
         if(up)text(label,x,y-3);
@@ -266,10 +306,13 @@ class Button{
         textSize(12);
       }}
       else{
+        fill(255);
+        rect(x,y,w,h,r1,r2,r3,r4);
+        fill(col);
+        if(localTheme);
         fill(fcol);
-        if(toggle==1)fill(bcol);
         if(!border)noStroke();
-        rect(x,y,w,h);
+        rect(x,y,w,h,r1,r2,r3,r4);
         if(label!=null){
           textSize(tsize);
           if(up)text(label,x,y-3);
@@ -294,22 +337,20 @@ class Button{
         if(bsize<tsize+tmax) bsize += 0.5;
       }else if(bsize>tsize)bsize -= 0.5;
       }
-      
+      highlight();
       if(radio||togglebar){
-        if(pos2()||toggle==1)bcol = hcol;
-        else bcol = color(0,100);
       }
       
   };
   
   void logic(PVector m){
     if(animate){
-      if(pos(m)){
+      if(pos(m)||toggle==1){
         if(bsize<tsize+tmax) bsize += 0.5;
         }else if(bsize>tsize)bsize -= 0.5;
       
       }
-      
+      highlight(m);
       if(radio||togglebar){
         // if(pos2(m)||toggle==1)bcol = hcol;
         // else bcol = color(0,100);
@@ -339,10 +380,12 @@ class Button{
         //y = parent.y;
       }
       
-      canvas.fill(50);
-      canvas.rect(x,y,w,h);
-      canvas.fill(col1);
-      canvas.rect(x ,y,w,h);
+      canvas.fill(255);
+      canvas.rect(x,y,w,h,r1,r2,r3,r4);
+      canvas.fill(col);
+      if(localTheme)
+      canvas.fill(fcol);
+      canvas.rect(x ,y,w,h,r1,r2,r3,r4);
       
       canvas.textSize(textsize);
       
@@ -358,11 +401,15 @@ class Button{
         canvas.translate(x*scalew,0);
         canvas.scale(scalew,1);
       }
-      
-        canvas.fill(tcol);
+        canvas.fill(BMS.tcol);
+        //if(localTheme)
+        canvas.fill(0);
+        //canvas.fill(255);
         canvas.textSize(bsize);
-        if(!textbtm&&!textright&&!textup)canvas.text(label,x+5+txoff,y+13+tyoff+5);
-        if(textbtm)text(label,x+xoff,y+h+yoff+tsize);
+        if(!textbtm&&!textright&&!textup)
+        canvas.text(label,x+5+txoff,y+13+tyoff+5);
+        if(textbtm)
+        canvas.text(label,x+xoff,y+h+yoff+tsize);
         canvas.textSize(12);
         if(scaleh>0){
           canvas.scale(1,1/scaleh);
@@ -392,63 +439,89 @@ class Button{
       }
     
     if(radio){
-      canvas.fill(0);
+      canvas.fill(BMS.toggleCol);
+      if(localTheme)
+      canvas.fill(toggleCol);
       canvas.stroke(col);
       if(!border)canvas.noStroke();
       
       if(w>h){
+      canvas.fill(col);
+      if(localTheme)
       canvas.fill(fcol);
-      canvas.rect(x ,y,w,h);
+      canvas.rect(x ,y,w,h,r1,r2,r3,r4);
       if(label!=null){
+        canvas.fill(BMS.tcol);
+        if(localTheme)
+        canvas.fill(tcol);
         canvas.textSize(tsize);
         if(up)canvas.text(label,x,y-3);
         if(right)canvas.text(label,x+w+2,y);
         if(down)canvas.text(label,x,y+tsize*2+2);
         else canvas.text(label,x - canvas.textWidth(label) - 4 + txoff,y+tsize + tyoff);
         canvas.textSize(12);
+        canvas.text(label,x+txoff,y+tsize);
       }
+      canvas.fill(BMS.bcol);
+      if(localTheme)
       canvas.fill(bcol);if(toggle==1)canvas.fill(255);
       canvas.ellipse(x+w/2 ,y+w/2,w-8,h-8);
     }
     else{
+      canvas.fill(BMS.fcol);
+      if(localTheme)
       canvas.fill(fcol);
       canvas.rect(x,y,h,h);
       if(label!=null){
+        canvas.fill(0);
         canvas.textSize(tsize);
         if(up)canvas.text(label,x,y-3);
         if(right)canvas.text(label,x+w+2,y);
         if(down)canvas.text(label,x,y+tsize*2+2);
         else text(label,x - textWidth(label) - 4 +txoff,y+tsize+tyoff);
         canvas.textSize(12);
+        canvas.text(label,x+txoff,y+tsize);
       }
+      canvas.fill(BMS.fcol);
+      if(localTheme)
       canvas.fill(fcol);if(toggle==1)canvas.fill(255);
       canvas.ellipse(x+h/2,y+h/2,w-8,h-8);
     }}
     
     if(togglebar){
-      canvas.fill(0);
+      canvas.fill(255);
+      if(localTheme)
+      canvas.fill(255);
       canvas.stroke(col);
       if(!border)canvas.noStroke();
       
       if(w>h){
+      canvas.fill(255);
+      if(localTheme)
       canvas.fill(fcol);
-      canvas.rect(x ,y,w,h);
+      canvas.rect(x ,y,w,h,r1,r2,r3,r4);
       if(label!=null){
+        canvas.fill(0);
         canvas.textSize(tsize);
-        // if(up)canvas.text(label,x,y-3);
-        // if(right)canvas.text(label,x+w+2,y);
-        // if(down)canvas.text(label,x,y+tsize*2+2);
-        // else text(label,x - textWidth(label) - 4 + txoff,y+tsize + tyoff + 4);
+        if(up)canvas.text(label,x,y-3);
+        if(right)canvas.text(label,x+w+2,y);
+        if(down)canvas.text(label,x,y+tsize*2+2);
+        else text(label,x - textWidth(label) - 4 + txoff,y+tsize + tyoff + 4);
         canvas.textSize(12);
       }
+      canvas.fill(col);
+      if(localTheme)
       canvas.fill(bcol);
-      if(toggle==0){canvas.rect(x + w/2,y,w/2,h);canvas.text("OFF",x+w+2+txoff,y+tsize+tyoff+4);}
-      else{ canvas.rect(x,y,w/2,h);canvas.text("ON",x+w+2+txoff,y+tsize+tyoff+4);}
+      if(toggle==0){canvas.rect(x + w/2,y,w/2,h,r1,r2,r3,r4);canvas.text("OFF",x+w+2+txoff,y+tsize+tyoff+4);}
+      else{ canvas.rect(x,y,w/2,h,r1,r2,r3,r4);canvas.text("ON",x+w+2+txoff,y+tsize+tyoff+4);}
     }
     else{
+      canvas.fill(col);
+      if(localTheme)
       canvas.fill(fcol);
-      canvas.rect(x,y,w,h);
+      canvas.rect(x,y,w,h,r1,r2,r3,r4);
       if(label!=null){
+        canvas.fill(0);
         canvas.textSize(tsize);
         if(up)canvas.text(label,x,y-3);
         if(right)canvas.text(label,x+w+2,y);
@@ -456,45 +529,66 @@ class Button{
         else text(label,x - textWidth(label) - 4 +txoff,y+w/2+tsize/2+tyoff);
         canvas.textSize(12);
       }
+      canvas.fill(col);
+      if(localTheme)
       canvas.fill(fcol);
-      if(toggle==0){canvas.rect(x+h/2,y,w,h/2);canvas.text("OFF",x+txoff,y+h+2+tyoff+4);}
-      else{ canvas.rect(x,y,w,h/2);canvas.text("ON",x+txoff,y+h+2+tyoff+4);}
+      if(toggle==0){canvas.rect(x+h/2,y,w,h/2,r1,r2,r3,r4);canvas.text("OFF",x+txoff,y+h+2+tyoff+4);}
+      else{ canvas.rect(x,y,w,h/2,r1,r2,r3,r4);canvas.text("ON",x+txoff,y+h+2+tyoff+4);}
     }}
     else if(togglebox){
+      canvas.fill(BMS.toggleCol);
+      if(localTheme)
       canvas.fill(0);
       canvas.stroke(col);
       if(!border)canvas.noStroke();
       
       if(w>h){
-      canvas.fill(fcol,0);
-      if(toggle==1)canvas.fill(bcol);
-      canvas.rect(x ,y,w,h);
+      canvas.fill(col);
+      if(localTheme)
+      canvas.fill(fcol);
+      if(toggle==1){
+        canvas.fill(BMS.bcol);
+        if(localTheme)
+        canvas.fill(bcol);
+      }
+      //canvas.rect(x ,y,w,h,r1,r2,r3,r4);
       if(label!=null){
+        canvas.fill(0);
         canvas.textSize(tsize);
-        // if(up)canvas.text(label,x,y-3);
-        // if(right)canvas.text(label,x+w+2,y+tyoff);
-        // if(down)canvas.text(label,x,y+tsize*2+2+tyoff);
-        // else text(label,x - textWidth(label) - 4 + txoff,y+tsize + tyoff + 4);
+         //if(up)canvas.text(label,x,y-3);
+         //if(right)canvas.text(label,x+w+2,y+tyoff);
+         //if(down)canvas.text(label,x,y+tsize*2+2+tyoff);
+         //else text(label,x - textWidth(label) - 4 + txoff,y+tsize + tyoff + 4);
         canvas.textSize(12);
       }}
     else{
+      canvas.fill(col);
+      if(localTheme)
       canvas.fill(fcol);
-      if(toggle==1)canvas.fill(bcol);
+      if(toggle==1){
+        canvas.fill(BMS.bcol);
+        if(localTheme)
+        canvas.fill(bcol);
+      }
       if(!border)canvas.noStroke();
-      canvas.rect(x,y,w,h);
+      canvas.rect(x,y,w,h,r1,r2,r3,r4);
       if(label!=null){
+        canvas.fill(0);
         canvas.textSize(tsize);
-        // if(up)canvas.text(label,x,y-3);
-        // if(right)canvas.text(label,x+w+2,y);
-        // if(down)canvas.text(label,x,y+tsize*2+2);
-        // else canvas.text(label,x + 4 +txoff,y+w/2+tsize/2+tyoff);
+         //if(up)canvas.text(label,x,y-3);
+         //if(right)canvas.text(label,x+w+2,y);
+         //if(down)canvas.text(label,x,y+tsize*2+2);
+         //else canvas.text(label,x + 4 +txoff,y+tsize/2+tyoff);
         canvas.textSize(12);
-      }}}
+      }}
+    }
     
     if(subpos(mouse))toggle2 = 1;
     else toggle2 = 0;
     canvas.strokeWeight(1);
     if(info!=null)info.draw();
+    //canvas.fill(0);
+    //canvas.text(label,x+txoff,y+tsize);
   };
   
   void radio(){
@@ -578,12 +672,14 @@ class Button{
     if(toggle==2){
      toggle=0; 
     }}else{
-    if(pos()&&parent.toggle==1){
+    if(pos()&&parent.toggle==1&&mousePressed&&!mdown){
+      mdown = true;
       toggle++;
     }
     if(toggle==2){
      toggle=0; 
     }}
+    if(!mousePressed)mdown = false;
   };
 
   boolean hold(){
@@ -894,13 +990,14 @@ class Button{
   
   public void toggle(Object a, String b){
     if(parent!=null){
-    if(pos() && parent.toggle==1){
+    if(pos() && parent.toggle==1&&mousePressed&&!mdown){
+      mdown = true;
       toggle ++;
       
       if(toggle==2)toggle=0;
     }
-    if(pos() && parent.toggle==1){
-        
+    if(pos() && parent.toggle==1&&mdown&&!mousePressed){
+        mdown = false;
     Field field = null;
     
     try{
@@ -915,12 +1012,13 @@ class Button{
     }catch (IllegalAccessException e) {
     }}}else{
       
-      if(pos()){
+      if(pos()&&mousePressed&&!mdown){
+        mdown = true;
       toggle ++;
       if(toggle==2)toggle=0;
     }
-    if(pos()&&toggle==1){
-        
+    if(pos()&&toggle==1&&mdown&&!mousePressed){
+        mdown = false;
     Field field = null;
     
     try{
@@ -934,6 +1032,9 @@ class Button{
     }catch (NoSuchFieldException e) {
     }catch (IllegalAccessException e) {
     }}}
+    if(!mousePressed){
+      mdown = false;
+    }
   };
 
   public void toggle(Object a, String b,PGraphics c){
@@ -1038,7 +1139,7 @@ class Button{
     if(!mousePressed)mdown = false;
     
     if(pos() && parent.toggle==1){
-        
+       //if(mousePressed) println("button",a,b);
     Field field = null;
     
     try{
@@ -1049,8 +1150,11 @@ class Button{
          else field.set(a, false);
          
     }catch (NullPointerException e) {
+      if(mousePressed)println("button1, np");
     }catch (NoSuchFieldException e) {
+      if(mousePressed)println("button1, nsf",a);
     }catch (IllegalAccessException e) {
+      if(mousePressed)println("button1, ia");
     }}}
     else {
       
@@ -1066,7 +1170,6 @@ class Button{
     if(!mousePressed)mdown = false;
     
     if(mdown){
-        
     Field field = null;
     
     try{
@@ -1075,12 +1178,15 @@ class Button{
         
          if(toggle==1){
            field.set(a, true); 
-         }else {
+         }else 
            field.set(a, false);
-         }
+         
     }catch (NullPointerException e) {
+      if(mousePressed)println("button, np");
     }catch (NoSuchFieldException e) {
+      if(mousePressed)println("button, nsf");
     }catch (IllegalAccessException e) {
+      if(mousePressed)println("button, ia");
     }}if(!mousePressed)toggle = 0;}
   };
   
@@ -1306,7 +1412,7 @@ class Button{
   };
   
   void highlight2(){
-    col = color(255,50);
+    col = BMS.col;
   }
   
   void highlight3(){
@@ -1316,20 +1422,25 @@ class Button{
   };
   
   void highlight(){
-    if(toggle==1)col = hcol;
-    else col = fcol;
-    if(buttons.size()==0){
-    if(pos())col = hcol;
-    else col = fcol;
-    }else{
-      if(pos())col = hcol;
-      else col = fcol;
+    if(toggle==1||pos()){
+      col = BMS.hcol;
+      if(localTheme)col = hcol;
+    }
+    else if(!pos()){
+      col = BMS.fcol;
+      if(localTheme)col = fcol;
     }
   };
   
   void highlight(PVector m){
-    if(toggle==1||pos(m))col1 = hcol;
-    else if(!pos(m))col1 = fcol;
+    if(toggle==1||pos(m)){
+      col = BMS.hcol;
+      if(localTheme)col = hcol;
+    }
+    else if(!pos(m)){
+      col = BMS.fcol;
+      if(localTheme)col = fcol;
+    }
     
     // if(buttons.size()==0){
     // if(pos(m))col = hcol;

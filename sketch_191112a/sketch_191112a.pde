@@ -7,7 +7,6 @@ BMScontrols BMS;
 
 import java.io.*;
 import java.net.*;
-import processing.core.PApplet;
 
 //-------------hashmap---------------
 //import java.util.Hashtable;
@@ -31,72 +30,72 @@ import java.lang.reflect.Modifier;
 import java.awt.*;
 import java.lang.reflect.*;
 
- 
+import android.os.Environment;
+import android.os.Build ;
+import android.app.Activity;
+import android.content.Context;
+
 boolean k1 = false;
-PImage img;
-//SetFieldValueExample n = new SetFieldValueExample();
-int W = 1340,H = 600;
+int W = 1440,H = 720;
 tab tab1;
-TextBox t1;
-TextArea t2;
+
+Permission storage,camera;
+PGraphics canvas;
+PShader edges;
+KetaiCamera cam;
+float counter,mult;
+boolean mdown;
+
 void settings(){
   
   size(W,H,P2D);
   //size(W,H,P2D);
 };
 
+
 void setup(){
-  //orientation(LANDSCAPE);
+  orientation(LANDSCAPE);
+  canvas = createGraphics(W,H,P2D);
+  edges = loadShader("edges.glsl");
+  storage = new Permission(this,"WRITE_EXTERNAL_STORAGE");
+  camera = new Permission(this,"CAMERA");
+  cam = new KetaiCamera(this, 1440, 720, 60);
   BMS = new BMScontrols(this);
   BMS.begin();
-  
-  tab1 = new tab(300,100,200,300,"tab1");
+  tab1 = new tab(500,200,200,300,"tab1");
   tab1.toggle = true;
   tab1.visible = true;
   tab1.draggable = true;
   
-  String []s = {"test","test","test"};
-  Menu menu = new Menu(10,20,100,s);
-  Dropdown dMenu = new Dropdown(10,90,100,s);
+  String []s = {"test","test1","test2"};
+  Menu menu = new Menu(10,40,100,s);
+  menu.setRadius(5);
+  Dropdown dMenu = new Dropdown(10,115,100,s);
+  sliderBox s1 = new sliderBox(50,150,90,10,s,false);
+  s1.menu.draggable = false;
   tab1.add(menu);
   tab1.add(dMenu);
-  
-  t1 = new TextBox(400,200,100,40,10);
-  t2 = new TextArea(700,200,100,40,10,20);
+  tab1.add(s1);
+  tab1.setRadius(10);
+  tab1.setAlignment("center");
+  BMS.menus.get(0).setRadius(10);
+  BMS.menus.get(0).setAlignment("center");
   
 };
 
 void draw(){
   fill(255);
-  //background(BMS.bgcol);
-  background(50);
+  background(BMS.bgcol);
+  //background(50);
   text(frameRate,50,100);
+  
+  displayCam();
   BMS.run();
-  BMS.menus.get(0).items.get(2).submenu.self_toggle(1);
+  
   tab1.displayTab();
-  t1.draw();
-  t2.draw();
-  //Reset();
-  //if(mousePressed)println("bms",BMS.sliderBoxes.size());
-};
-
-
-
-
-void mousePressed(){
   
 };
 
-//void mouseReleased(){
-  
-//};
-
-//void mouseClicked(){
-//  BMS.click();
-//};
-
-//void mouseDragged(){
-  
-//  //file.dpos();
-//  //BMS.slider_functions();
-//};
+void onCameraPreviewEvent(){
+  cam.read();
+};

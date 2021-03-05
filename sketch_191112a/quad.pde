@@ -1,5 +1,3 @@
-
-
 class Quad{
   int id,iid,counter,xpos,ypos;
   float x,y,w,h,dens,dens2,dens3,dens4,v,v2,v3,v4,kv,kv2,kv3,kv4;

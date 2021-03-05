@@ -2,7 +2,8 @@ class BMScontrols{
   
   int Mcount;
   HashMap<Object,String> booleans = new HashMap<Object,String>();
-  color bgcol = color(0);
+  color bgcol = color(50, 235, 225);
+  color col = color(0, 255, 73), bcol = color(255), tcol = color(255), fcol = color(0, 255, 73), hcol = color(0, 255, 73,100),toggleCol = color(55, 84, 63);
   PApplet applet = null;
   boolean updated,autoSave;
   String currentMouseObject;
@@ -23,7 +24,7 @@ class BMScontrols{
   ArrayList<Menu> menus = new ArrayList<Menu>();
   ArrayList<tab> tabs = new ArrayList<tab>();
   Boundary bb;
-  
+  Window main;
   //fileInput File,Folder;
   Menu menu;
   
@@ -59,7 +60,7 @@ void begin(){
   //sliderBox s = new sliderBox(100,100,90,10,ss);
   setupWindows();
   setupMenus();
-  setupRGB();
+  //setupRGB();
   setupReset();
   
   setupDock();
@@ -100,39 +101,33 @@ void setupMenus(){
   // file----------------------------------------------
   
   //println("iugoiugoiugoiug", Sliders.size());
-  String [] flabels = {"Open","Save","Grid","Plot 2D","Plot 3D","Attractor","Reset"};
-  file = new Menu(20,0,30,40,"File",flabels,0);
+  //String [] flabels = {"Open","Save","Grid","Plot 2D","Plot 3D","Attractor","Reset"};
+  String [] flabels = {"Background","Camera"};
+  file = new Menu(20,0,50,70,"File",flabels,0);
   
   BMS.menus.add(file);
   
-
   //----------------------file -----------------------------------
   if(file!=null){
   String []glabels = {"Terrain","Img","Cam","Video","Audio","Text"};
-  file.items.get(2).submenu  = new Menu(file.items.get(2).x+file.items.get(2).w,file.items.get(2).y,70,glabels,0);
-  file.set_link(2);
-  String [] attractor_labels = {"Show/Hide","On/Off"};
-  file.items.get(5).submenu = new Menu(file.items.get(5).x+file.items.get(5).w,file.items.get(5).y,100,attractor_labels,0);
-  file.set_link(5);
+  file.items.get(0).submenu  = new Menu(file.items.get(0).x+file.items.get(0).w,file.items.get(0).y,70,glabels,0);
+  file.setLink(0);
   }
   
-  file.set(6,0);
+
   String []ss = {"test1","test2","test3"};
   float a = 200;
   sliderBox s = new sliderBox(a,100,90,10,ss);
-  //sliderBoxes.add(s);
+  String [] ss1 = {"red","green","blue"};
+  float [] v1 = {52, 235, 225};
+  s = new sliderBox(a,320,90,10,ss1,v1,true);
+  s.visible = false;
+  sliderBoxes.add(s);
   Slider s1 = new Slider(a,200,90,10,"test");
   Sliders.add(s1);
-   s1 = new Slider(a,220,90,10,"test1");
+  s1 = new Slider(a,220,90,10,"test1");
   Sliders.add(s1);
   
-};
-
-void setupRGB(){
-  //rgb_slider = new rgb_Slider(500,200,90,40,15);
-  //rgb_slider.display("vertical");
-  //rgb_slider.set("color");
-  //rgb_slider.set("radio");
 };
 
 
@@ -162,12 +157,19 @@ void loadImg(){
 
 void run(){
   globalLogic();
+  Menu m1 = sliderBoxes.get(1).menu;
+  Slider r = m1.sliders.get(0);
+  Slider g = m1.sliders.get(1);
+  Slider b = m1.sliders.get(2);
+  bgcol = color(r.value,g.value,b.value);
   mainFunctions();
   displayButtons();
   menuFunctions();
   sliderBoxFunctions();
   sliderFunctions();
   for(Menu menu : BMS.menus)menu.click();
+  menus.get(0).self_toggle(1);
+  menus.get(0).toggle2(0,sliderBoxes.get(1),"visible");
 };
 
 void displayButtons(){
@@ -270,7 +272,8 @@ void sliderBoxFunctions(){
   for(int i=0;i<sliderBoxes.size();i++){
     
     sliderBox s = sliderBoxes.get(i);
-    s.draw();
+    if(s.visible)s.draw();
+    if(i==1)s.setColor();
     //s.tooltip.draw();
     //for(int i=0
     
@@ -287,7 +290,8 @@ void sliderFunctions(){
     Slider s = Sliders.get(i);
     s.draw();
     s.mouseFunctions();
-    s.set(0,10);
+    if(i==0)s.set(0,20);
+    if(i==1)s.setint(0,6);
     //s.tooltip.draw();
     //for(int i=0
     

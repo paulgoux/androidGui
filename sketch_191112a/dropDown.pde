@@ -1,7 +1,7 @@
 class Dropdown extends Menu {
 
   Slider slider;
-  float windowx,bwindowx,hiddenw;
+  float windowx,bwindowx,hiddenw,r1,r2,r3,r4,txoff,tyoff;
   int dcount,windowSize = 5;
   boolean dclick,visible = true,dclose,draggable,mcoord;
   Button title;
@@ -273,15 +273,13 @@ class Dropdown extends Menu {
     
     dcount = 0;
 
-      if(dclick&&slider!=null){
-        
-        fill(255);
-        rect(x,y+h,w,slider.h);
-        fill(0,150);
-        rect(x,y+h,w,slider.h);
-      }
-
-
+    if(dclick&&slider!=null){
+      
+      fill(255);
+      rect(x,y+h,w,slider.h,r1,r2,r3,r4);
+      fill(col);
+      rect(x,y+h,w,slider.h,r1,r2,r3,r4);
+    }
 
     for(int i=0;i<items.size();i++){
       Button b = items.get(i);
@@ -344,9 +342,11 @@ class Dropdown extends Menu {
     dcount = 0;
       if(dclick&&slider!=null){
         canvas.fill(255);
-        canvas.rect(x,y+h,w,slider.h);
-        canvas.fill(0,150);
-        canvas.rect(x,y+h,w,slider.h);
+        canvas.rect(x,y+h,w,slider.h,r1,r2,r3,r4);
+        canvas.fill(col);
+        if(localTheme)canvas.fill(fcol);
+          
+        canvas.rect(x,y+h,w,slider.h,r1,r2,r3,r4);
       }
 
     for(int i=0;i<items.size();i++){
@@ -462,24 +462,25 @@ class Dropdown extends Menu {
   void drawLabel(){
     
     fill(255);
-    rect(x,y,w,h);
+    rect(x,y,w,h,r1,r2,r4,r4);
     if(pos())fill(0,100);
-    fill(0,150);
-    rect(x,y,w,h);
+    fill(col);
+    if(localTheme)fill(fcol);
+    rect(x,y,w,h,r1,r2,r4,r4);
     fill(255);
-    text(label,x+2,y+tsize+2);
+    text(label,x+2+txoff,y+tsize+2+tyoff);
     
   };
   
   void drawLabel(PGraphics canvas){
     
     canvas.fill(255);
-    canvas.rect(x,y,w,h);
-    canvas.fill(0,150);
-    if(pos())fill(0,100);
-    canvas.rect(x,y,w,h);
+    canvas.rect(x,y,w,h,r1,r2,r4,r4);
+    canvas.fill(col);
+    if(localTheme)fill(fcol);
+    canvas.rect(x,y,w,h,r1,r2,r4,r4);
     canvas.fill(255);
-    canvas.text(label,x+2,y+tsize+2);
+    canvas.text(label,x+2+txoff,y+tsize+2+tyoff);
     
   };
   
@@ -636,5 +637,20 @@ class Dropdown extends Menu {
 
   boolean subMenuPos(PVector m){
     return m.x>x+w-20&&m.x<x+w&&m.y>y&&m.y<y+h;
+  };
+  
+  void setRadius(float a){
+    r1 = a;
+    r2 = a;
+    r3 = a;
+    r4 = a;
+    for(int i=0;i<items.size();i++){
+      Button b = items.get(i);
+      b.r1 = a;
+      b.r2 = a;
+      b.r3 = a;
+      b.r4 = a;
+    }
+    
   };
 };

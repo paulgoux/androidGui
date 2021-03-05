@@ -1,13 +1,13 @@
 class Menu {
 
   int id, item, t, toggle, toggle2, type = 0, index =-1, subindex = -1, t2, sindex=-1, counter, slcount,nindex = -1;
-  public float x, y, bx = x, by = y, w, h, xoff, yoff, window = 0, htotal, Yoff, xpos, ypos, tsize = 12, bsize, spacing, twidth;
+  public float x, y, bx = x, by = y, w, h, xoff, yoff, window = 0, htotal, Yoff, xpos, ypos, tsize = 12, bsize, spacing, twidth,r1,r2,r3,r4;
   PVector mouse,mousePos =new PVector(0,0);
   public String label, blabel,itemLabel;
   float dx,dy;
   boolean drag = false, resize = false, slide = false, border = false, menu, menuhover = false, highlightable = true, animate, vertical, horizontal = false, dmenu;
-  boolean mdown, mup, smdown, smup, listbox, open_menu, sltoggle, free,parentRight,draggable,parentCanvas,m2down,m3down,getIndex,m4down,m5down,m6down;
-  public boolean visible = true,show = true;
+  boolean mdown, mup, smdown, smup, listbox, open_menu, sltoggle, free,parentRight,draggable,parentCanvas,m2down,m3down,getIndex,m4down,m5down,m6down,subMenuPos;
+  public boolean visible = true,show = true,localTheme;
   ArrayList<Button> items = new ArrayList<Button>();
   ArrayList<Slider> sliders = new ArrayList<Slider>();
   ArrayList<Dropdown> dMenus = new ArrayList<Dropdown>();
@@ -23,7 +23,8 @@ class Menu {
   Dropdown dMenu;
 
   Menu link;
-  color col = color(0,150), bcol, tcol = color(255), fcol = color(255, 80), hcol = color(255, 50);
+  //color col = color(0,150), bcol, tcol = color(255), fcol = color(255, 80), hcol = color(255, 50),toggleCol = color(50,0);
+  color col = color(0, 255, 73), bcol = color(0, 255, 73), tcol = color(255), fcol = color(0, 255, 73), hcol = color(0, 255, 73),toggleCol = color(55, 84, 63);
 
   public Menu() {
   };
@@ -325,12 +326,16 @@ class Menu {
     if (draggable) {
       if(!parentCanvas){
         stroke(0);
-        fill(0,266,0,150);
-        rect(x,y-5, w, 5);
+        fill(col);
+        if(localTheme)
+        fill(fcol);
+        rect(x,y-5, w, 5,r1,r2,r3,r4);
       }else{
         localCanvas.stroke(0);
-        localCanvas.fill(0,150);
-        localCanvas.rect(x,y-5, w, 5);
+        localCanvas.fill(col);
+        if(localTheme)
+        localCanvas.fill(fcol);
+        localCanvas.rect(x,y-5, w, 5,r1,r2,r3,r4);
       }
     }
   };
@@ -385,17 +390,21 @@ class Menu {
   void getState() {
 
     stroke(0);
+    if(highlightable)highlight();
     if (!border)noStroke();
 
-    //if(toggle==1){
-      fill(bgcol);
-      if (visible)rect(x, y, w, h);
+      fill(255);
+      if (visible&&label!=null)rect(x, y, w, h,r1,r2,r3,r4);
       fill(col);
-      if (visible)rect(x, y, w, h);
+      if(localTheme)
+      fill(fcol);
+      
+      if (visible&&label!=null)rect(x, y, w, h,r1,r2,r3,r4);
       fill(0);
-    //}
 
     if(label!=null) {
+      fill(BMS.tcol);
+      if(localTheme)
       fill(tcol);
       textSize(bsize);
       text(label, x+xoff, y+yoff + 18);
@@ -409,19 +418,26 @@ class Menu {
   };
   
   void getState(PGraphics canvas) {
+    //if(highlightable)highlight(canvas);
     while (items.size()!=child.size()) {
       child.add(false);
     }
     canvas.stroke(0);
     if (!border)canvas.noStroke();
 
-    canvas.fill(bgcol);
-    if (visible)canvas.rect(x, y, w, h);
     canvas.fill(col);
-    if (visible)canvas.rect(x, y, w, h);
+    if(localTheme)
+    canvas.fill(fcol);
+    if (visible&&label!=null)canvas.rect(x, y, w, h,r1,r2,r3,r4);
+    canvas.fill(col);
+    if(localTheme)
+    canvas.fill(fcol);
+    if (visible&&label!=null)canvas.rect(x, y, w, h,r1,r2,r3,r4);
     canvas.fill(0);
 
     if(label!=null) {
+      canvas.fill(BMS.tcol);
+      if(localTheme)
       canvas.fill(tcol);
       canvas.textSize(bsize);
       canvas.text(label, x+xoff, y+yoff + 18);
@@ -434,7 +450,7 @@ class Menu {
 
   void drawButtons() {
     
-    float speed = 2;
+    float speed = h/5;
     if (items.size()>0) {
       // if(pos()&&mousePressed){
       //   println("hello");
@@ -773,17 +789,27 @@ class Menu {
   void logic() {
 
     mousePos = new PVector(mouseX,mouseY);
-    if(mousePressed&&!pos()&&!dpos()&&!drag)m5down = true;
+    if(mousePressed&&pos()&&!dpos()&&!drag)m5down = true;
     if(mouse!=null) mousePos = mouse;
     //if(index>-1&&subindex==-1&&!pos()&&mousePressed)index = -1;
     if (mWindow!=null)y = sliders.get(0).valuey;
-    if (highlightable) {
-      if (pos(mousePos)) col = hcol;
-      else col = fcol;
-    }
-
-    if (toggle==1)col = hcol;
-    else col = fcol;
+    //if (highlightable) {
+    //  if(!localTheme){
+    //    if (pos(mousePos)) col = BMS.hcol;
+    //    else col = BMS.fcol;
+    //  }else{
+    //    if (pos(mousePos)) col = hcol;
+    //    else col = fcol;
+    //  }
+    //}
+    //if(!localTheme){
+    //  if (toggle==1)col = BMS.toggleCol;
+    //  else col = BMS.fcol;
+    //}else{
+    //  if (toggle==1)col = toggleCol;
+    //  else col = fcol;
+    //}
+    
     if ((pos()||toggle==1)) open_menu = true;
     else open_menu = false;
     if (draggable&&dpos()&&mousePressed&&!drag&&!mdown&&!m5down) {
@@ -793,7 +819,7 @@ class Menu {
       dy = mouseY - y;
     }
     
-    if(drag&&!m5down){
+    if(drag){
       x = mouseX - dx;
       y = mouseY - dy;
       
@@ -981,7 +1007,7 @@ class Menu {
     }
   };
 
-  void set_link(Menu a) {
+  void setLink(Menu a) {
 
     link = a;
   };
@@ -1121,10 +1147,11 @@ class Menu {
   };
 
   void click() {
-    fill(250);
-    text(index,100,200);
     if (parent==null) {
       boolean k = itemSelected();
+      if(k&&mousePressed)m4down = true;
+      if(index>-1&&items.get(index).submenu!=null&&items.get(index).submenu.pos())subMenuPos = true;
+      else subMenuPos = false;
       
       if (pos() && mousePressed&&BMS.menuObject==null&&!m3down) {
         toggle++;
@@ -1143,33 +1170,16 @@ class Menu {
       if(mousePressed&&k){
         m3down = true;
       }
-      if (!pos() && mousePressed&&BMS.menuObject==this&&index>-1) {
-        //println("p3",index);
-        if(items.get(index).submenu!=null&&!items.get(index).submenu.pos()&&!m4down){
-          m4down = true;
-          toggle = 0;
-          BMS.menuObject.toggle = 0;
-          BMS.menuObject.index = -1;
-          BMS.menuObject=null;
-          println("l3");
-        }
-        if(index>-1&&items.get(index).submenu==null&&!k&&!m4down){
-          m4down = true;
-          toggle = 0;
-          BMS.menuObject.toggle = 0;
-          BMS.menuObject.index = -1;
-          BMS.menuObject=null;
-          println("l4");
-        }
-        //if(index>-1&&items.get(index).submenu!=null&&!items.get(index).submenu.pos()&&!m3down&&!k){
-        //  m3down = true;
-        //  toggle = 0;
-        //  BMS.menuObject.toggle = 0;
-        //  BMS.menuObject.index = -1;
-        //  BMS.menuObject=null;
-        //  println("l5");
-        //}
-        
+      
+      if (!pos() && mousePressed&&!k&&!m4down&&!subMenuPos) {
+        m3down = true;
+        toggle = 0;
+        if(BMS.menuObject!=null){
+        BMS.menuObject.toggle = 0;
+        BMS.menuObject.index = -1;
+        BMS.menuObject=null;
+      }
+        println("l3");
       }
       //if(!m3down&&index==-1&&mousePressed&&BMS.menuObject==this){
       //    m3down = true;
@@ -1328,11 +1338,11 @@ class Menu {
     //}
   };
 
-  void set_link(int i) {
-    Menu m = items.get(i).submenu;
+  void setLink(int k) {
+    Menu m = items.get(k).submenu;
 
     m.link = this;
-  }
+  };
 
   String[] getItems(){
     String[] s = new String[items.size()];
@@ -1340,5 +1350,231 @@ class Menu {
       s[i] = items.get(i).label;
     }
     return s;
+  };
+  
+  void setRadius(float a){
+    r1 = a;
+    r2 = a;
+    r3 = a;
+    r4 = a;
+    for(int i=0;i<items.size();i++){
+      Button b = items.get(i);
+      b.r1 = a;
+      b.r2 = a;
+      b.r3 = a;
+      b.r4 = a;
+      //println(b.r1);
+      if(b.submenu!=null){
+        for(int j=0;j<b.submenu.items.size();j++){
+          Button b1 = b.submenu.items.get(j);
+          b1.r1 = a;
+          b1.r2 = a;
+          b1.r3 = a;
+          b1.r4 = a;
+        }
+      }
+    }
+    
+    for(int i=0;i<sliders.size();i++){
+      Slider b = sliders.get(i);
+      b.r1 = a;
+      b.r2 = a;
+      b.r3 = a;
+      b.r4 = a;
+    }
+  };
+  
+  void setRadius(float a,float b,float c,float d){
+    r1 = a;
+    r2 = b;
+    r3 = c;
+    r4 = d;
+    
+    for(int i=0;i<items.size();i++){
+      Button b1 = items.get(i);
+      b1.r1 = a;
+      b1.r2 = b;
+      b1.r3 = c;
+      b1.r4 = d;
+      if(b1.submenu!=null){
+        for(int j=0;j<b1.submenu.items.size();j++){
+          Button b2 = b1.submenu.items.get(j);
+          b2.r1 = a;
+          b2.r2 = b;
+          b2.r3 = c;
+          b2.r4 = d;
+        }
+      }
+    }
+    
+    for(int i=0;i<sliders.size();i++){
+      Slider b1 = sliders.get(i);
+      b1.r1 = a;
+      b1.r2 = b;
+      b1.r3 = c;
+      b1.r4 = d;
+    }
+  };
+  
+  void setButtonRadius(float a){
+    
+    for(int i=0;i<items.size();i++){
+      Button b1 = items.get(i);
+      b1.r1 = a;
+      b1.r2 = a;
+      b1.r3 = a;
+      b1.r4 = a;
+      if(b1.submenu!=null){
+        for(int j=0;j<b1.submenu.items.size();j++){
+          Button b2 = b1.submenu.items.get(j);
+          b2.r1 = a;
+          b2.r2 = a;
+          b2.r3 = a;
+          b2.r4 = a;
+        }
+      }
+    }
+  };
+  
+  void setSliderRadius(float a){
+    
+    for(int i=0;i<sliders.size();i++){
+      Slider b1 = sliders.get(i);
+      b1.r1 = a;
+      b1.r2 = a;
+      b1.r3 = a;
+      b1.r4 = a;
+    }
+  };
+  
+  void setButtonRadius(float a,float b,float c,float d){
+    
+    for(int i=0;i<items.size();i++){
+      Button b1 = items.get(i);
+      b1.r1 = a;
+      b1.r2 = b;
+      b1.r3 = c;
+      b1.r4 = d;
+      if(b1.submenu!=null){
+        for(int j=0;j<b1.submenu.items.size();j++){
+          Button b2 = b1.submenu.items.get(j);
+          b2.r1 = a;
+          b2.r2 = b;
+          b2.r3 = c;
+          b2.r4 = d;
+        }
+      }
+    }
+  };
+  
+  void setSliderRadius(float a,float b,float c,float d){
+    
+    for(int i=0;i<sliders.size();i++){
+      Slider b1 = sliders.get(i);
+      b1.r1 = a;
+      b1.r2 = b;
+      b1.r3 = c;
+      b1.r4 = d;
+    }
+  };
+  
+  void setAlignment(String s){
+    
+    if(s=="CENTER"||s=="center"||s=="Center"){
+      
+      xoff = (w-textWidth(label))/2;
+      yoff = h/3;
+      
+      for(int i=0;i<items.size();i++){
+        Button b = items.get(i);
+        b.tyoff = b.h/3;
+        b.txoff = (b.w-textWidth(b.label))/2-((b.w-textWidth(b.label))/2)/2;
+        if(b.submenu!=null){
+          for(int j=0;j<b.submenu.items.size();j++){
+            Button b2 = b.submenu.items.get(j);
+            if(b2.h>20)b2.tyoff = b2.h/3;
+            b2.txoff = (b2.w-textWidth(b2.label))/2-((b2.w-textWidth(b2.label))/2)/2;
+            //b2.txoff = b2.w-textWidth(b2.label)/2;
+          }
+        }
+      }
+      
+      for(int i=0;i<sliders.size();i++){
+        Slider b = sliders.get(i);
+      }
+    }
+    
+    if(s=="RIGHT"||s=="right"||s=="Right"){
+      
+      xoff = (w-textWidth(label))-((w-textWidth(label)))/4;
+      yoff = h/3;
+      
+      for(int i=0;i<items.size();i++){
+        Button b = items.get(i);
+        b.tyoff = b.h/3;
+        b.txoff = (b.w-textWidth(b.label))-((b.w-textWidth(b.label)))/4;
+        if(b.submenu!=null){
+          for(int j=0;j<b.submenu.items.size();j++){
+            Button b2 = b.submenu.items.get(j);
+            b2.tyoff = b2.h/3;
+            b2.txoff = (b2.w-textWidth(b2.label))-((b2.w-textWidth(b2.label)))/4;
+          }
+        }
+      }
+      
+      for(int i=0;i<sliders.size();i++){
+        Slider b = sliders.get(i);
+      }
+    }
+    
+    if(s=="LEFT"||s=="left"||s=="Left"){
+      
+      xoff = 5;
+      yoff = h/3;
+      
+      for(int i=0;i<items.size();i++){
+        Button b = items.get(i);
+        b.tyoff = b.h/3;
+        b.txoff = 0;
+        if(b.submenu!=null){
+          for(int j=0;j<b.submenu.items.size();j++){
+            Button b2 = b.submenu.items.get(j);
+            b2.tyoff = b2.h/3;
+            b2.txoff = 0;
+          }
+        }
+      }
+      
+      for(int i=0;i<sliders.size();i++){
+        Slider b = sliders.get(i);
+      }
+    }
+  };
+  
+  void highlight(){
+    
+    if(!pos()){
+      col = BMS.hcol;
+      if(localTheme)col = fcol;
+    }
+    else{
+      col = BMS.fcol;
+      if(localTheme)col = fcol;
+    }
+    if(toggle==1||pos()){
+      col = BMS.toggleCol;
+      if(localTheme)col = toggleCol;
+    }
+  };
+  
+  void highlight(PGraphics canvas){
+    //if(toggle==1||pos(mouse)){
+    //  col = BMS.hcol;
+    //  if(localTheme)col = hcol;
+    //}
+    //else if(!pos(mouse)){
+    //  col = BMS.fcol;
+    //  if(localTheme)col = fcol;
+    //}
   };
 };
