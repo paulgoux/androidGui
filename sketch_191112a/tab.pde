@@ -5,6 +5,7 @@ class tab extends tabBoundary {
   int tabindex = -1, state, current,id,Width,Height;
   String label,itemLabel;
   boolean border,open,parentCanvas,overflow,docking,docked,dmdown;
+  public boolean localTheme,resizable,vscroll,hscroll;
   PVector mouse,mouse2;
   Dock parentDock; 
   
@@ -17,6 +18,7 @@ class tab extends tabBoundary {
   ArrayList<Menu> menus = new ArrayList<Menu>();
   ArrayList<sliderBox> sliderBoxes = new ArrayList<sliderBox>();
   ArrayList<Dropdown> dmenus = new ArrayList<Dropdown>();
+  ArrayList<toggleMenu> toggleMenus = new ArrayList<toggleMenu>();
   ArrayList<Table_> tables = new ArrayList<Table_>();
   ArrayList<String> links = new ArrayList<String>();
   
@@ -36,7 +38,7 @@ class tab extends tabBoundary {
   tab navigator;
   tab child, parent,parentTab;
   tab current_tab, next_tab, previous_tab;
-  color titleColor = color(0),textColor = color(0) ;
+  color titleColor = color(0),textColor = color(0),tabcol = color(0,255,175) ;
 
 
   ArrayList<tab> tabs = new ArrayList<tab>();
@@ -243,7 +245,7 @@ void setCanvas(tab t){
       t.drawTextboxes();
       t.drawTextareas();
       t.drawTextBlocks();
-      //t.drawSliderBoxes();
+      t.drawSliderBoxes();
     if(t.title!=null&&t.visible){
       t.title.toggle=1;
       t.drawTitle();
@@ -281,6 +283,7 @@ void setCanvas(tab t){
       t.drawTextboxes();
       t.drawTextareas();
       t.drawSliderBoxes();
+      t.drawToggleMenus();
       t.drawTextBlocks();
       if(t.title!=null&&t.visible){
         if(!toggle)t.title.toggle=1;
@@ -514,6 +517,23 @@ void setCanvas(tab t){
     s.parentCanvas = true;
     tab k = states.get(0);
     k.sliderBoxes.add(s);
+    for (int i=0; i<k.sliderBoxes.size(); i++) {
+        sliderBox s1 = k.sliderBoxes.get(i);
+        s1.x = x+s1.bx;
+        s1.y = y+s1.by;
+      }
+  };
+  
+  void add(toggleMenu s){
+    //clear();
+    s.parentTab = this;
+    tab k = states.get(0);
+    k.toggleMenus.add(s);
+    //for (int i=0; i<k.toggleMenus.size(); i++) {
+    //    toggleMenu s1 = k.toggleMenus.get(i);
+    //    s1.x = x+s1.bx;
+    //    s1.y = y+s1.by;
+    //  }
   };
   
   PVector getMouse(){
@@ -564,7 +584,7 @@ void setCanvas(tab t){
         //sliderh.mouseFunctions();
       }
     }
-    if(draggable){
+    if(draggable&&BMS.sliderObject==null){
       
       drawDragBox();
       if(!sliderv.mdown&&!sliderh.mdown&&title.pos(getMouse())&&mousePressed&&!mdown&&!drag&&BMS.currentObject==null){
@@ -612,14 +632,19 @@ void setCanvas(tab t){
   };
   
   void drawSliderBoxes(){
-    
+    //if(mousePressed)println("tab",states.get(state).sliderBoxes.size());
     for (int i=states.get(state).sliderBoxes.size()-1;i>-1; i--) {
       
       sliderBox s = null;
       if(states.get(state).sliderBoxes.get(i)!=null){
         s = states.get(state).sliderBoxes.get(i);
+        if(scrollable&&vscroll)s.menu.y = s.by - sliderv.value;
+        if(scrollable&&vscroll)s.y = s.by - sliderv.value;
+        if(scrollable&&hscroll)s.menu.x = s.menu.bx - sliderh.value;
+        if(scrollable&&hscroll)s.x = s.menu.bx - sliderh.value;
         s.mouse = getMouse();
         s.parentTab = this;
+        //if(mousePressed)println(s.x,s.y,s.menu.x,s.menu.y);
         s.draw(canvas);
       }
     }
@@ -630,6 +655,8 @@ void setCanvas(tab t){
     for (int i=states.get(state).sliderBoxes.size()-1;i>-1; i--) {
       
       sliderBox s = states.get(state).sliderBoxes.get(i);
+      if(scrollable&&vscroll)s.menu.y = s.menu.by - sliderv.value;
+      if(scrollable&&hscroll)s.x = s.bx - sliderh.value;
       s.mouse = getMouse();
       s.parentTab = this;
       s.draw();
@@ -644,12 +671,34 @@ void setCanvas(tab t){
       for (int i=states.get(state).sliderBoxes.size()-1;i>-1; i--) {
         
         sliderBox s = states.get(state).sliderBoxes.get(i);
+        if(scrollable&&vscroll)s.y = s.by - sliderv.value;
+        if(scrollable&&hscroll)s.x = s.bx - sliderh.value;
         s.mouse = getMouse();
         s.parentTab = this;
         s.draw(canvas);
       }
       canvas.endDraw();
       }
+  };
+  
+  void drawToggleMenus(){
+    //if(mousePressed)println("tab",states.get(state).sliderBoxes.size());
+    for (int i=states.get(state).toggleMenus.size()-1;i>-1; i--) {
+      
+      toggleMenu s = null;
+      if(states.get(state).toggleMenus.get(i)!=null){
+        s = states.get(state).toggleMenus.get(i);
+        if(s.parentTab == null)s.parentTab = this;
+        if(scrollable&&vscroll)s.menu.y = s.by - sliderv.value;
+        if(scrollable&&vscroll)s.y = s.by - sliderv.value;
+        //if(scrollable&&hscroll)s.menu.x = s.menu.bx - sliderh.value;
+        //if(scrollable&&hscroll)s.x = s.menu.bx - sliderh.value;
+        s.menu.mouse = getMouse();
+        if(s.menu.parentTab == null)s.menu.parentTab = this;
+        //if(mousePressed)println(s.x,s.y,s.menu.x,s.menu.y);
+        s.draw(canvas);
+      }
+    }
   };
 
   void drawTextBlocks(){
@@ -658,6 +707,8 @@ void setCanvas(tab t){
       textBlock t = states.get(state).textBlocks.get(i);
       //t.mouse = getMouse();
       //t.parentTab = this;
+      if(scrollable&&vscroll)t.y = t.by - sliderv.value;
+      if(scrollable&&hscroll)t.x = t.bx - sliderh.value;
       t.draw(canvas);
     }
     //canvas.endDraw();
@@ -671,6 +722,8 @@ void setCanvas(tab t){
       textBlock t = states.get(state).textBlocks.get(i);
       //t.mouse = getMouse();
       //t.parentTab = this;
+      if(scrollable&&vscroll)t.y = t.by - sliderv.value;
+      if(scrollable&&hscroll)t.x = t.bx - sliderh.value;
       t.draw(canvas);
     }
     canvas.endDraw();
@@ -692,14 +745,18 @@ void setCanvas(tab t){
     //canvas.ellipse(getMouse().x,getMouse().y,20,20);
     //canvas.endDraw();
     //image(canvas,x,y);
-    sliderv.mouse = getMouse();
-    //if(posTab(getMouse())||sliderv.mdown)
-    if(!sliderh.mdown)sliderv.mouseFunctions(mouse);
-    sliderv.draw(canvas);
-    sliderh.mouse = getMouse();
-    //if(posTab(getMouse())||sliderh.mdown)
-    if(!sliderv.mdown)sliderh.mouseFunctions(mouse);
-    sliderh.draw(canvas);
+    if(vscroll){
+      sliderv.mouse = getMouse();
+      //if(posTab(getMouse())||sliderv.mdown)
+      if(!sliderh.mdown)sliderv.mouseFunctions(mouse);
+      sliderv.draw(canvas);
+    }
+    if(hscroll){
+      sliderh.mouse = getMouse();
+      //if(posTab(getMouse())||sliderh.mdown)
+      if(!sliderv.mdown)sliderh.mouseFunctions(mouse);
+      sliderh.draw(canvas);
+    }
 
   };
 
@@ -718,6 +775,8 @@ void setCanvas(tab t){
         id=i;
         dmdown = true;
       }
+      if(scrollable&&vscroll)d.y = d.by - sliderv.value;
+      if(scrollable&&hscroll)d.x = d.bx - sliderh.value;
       if(d.toggle==1&&id!=i)d.toggle=0;
       d.displayDropdown(canvas);
       dmdown = false;
@@ -764,7 +823,8 @@ void setCanvas(tab t){
       canvas.fill(255);
       
       canvas.rect(0, 0, w, h,r1,r2,r3,r4);
-      canvas.fill(0, 50);
+      canvas.fill(BMS.tabcol);
+      if(localTheme)canvas.fill(tabcol);
       canvas.rect(0, 0, w, h,r1,r2,r3,r4);
     }
   };
@@ -878,11 +938,15 @@ void setCanvas(tab t){
     for (int i=0; i<buttons.size(); i++) {
       
       Button b = buttons.get(i);
+      if(scrollable&&vscroll)b.y = b.by - sliderv.value;
+      if(scrollable&&hscroll)b.x = b.bx - sliderh.value;
       b.mouse =  mouse;
       b.parentCanvas = true;
       b.draw(canvas);
       b.highlight(mouse);
       b.self_click2(mouse);
+      
+      
     }
   };
   
@@ -895,6 +959,9 @@ void setCanvas(tab t){
       b.parentCanvas = true;
       b.draw(scene);
       b.self_click2(mouse);
+      
+      if(scrollable&&vscroll)b.y = b.by - sliderh.value;
+      if(scrollable&&hscroll)b.x = b.bx - sliderv.value;
     }
   };
 
@@ -904,6 +971,8 @@ void setCanvas(tab t){
       Menu m = menus.get(i);
       
       //m.setParentCanvas(canvas);
+      if(scrollable&&vscroll)m.y = m.by - sliderv.value;
+      if(scrollable&&hscroll)m.x = m.bx - sliderh.value;
       m.mouse = getMouse();
       // if(parentTab==null)m.mouse = getMouse();
       // else m.mouse = getMouse(mouse);
@@ -916,6 +985,8 @@ void setCanvas(tab t){
       TextBox t = textboxes.get(i);
       if(parentTab==null)t.mouse = mouse;
       else t.mouse = getMouse(mouse);
+      if(scrollable&&vscroll)t.y = t.by - sliderv.value;
+      if(scrollable&&hscroll)t.x = t.bx - sliderh.value;
       t.draw(canvas);
     }
   };
@@ -925,6 +996,8 @@ void setCanvas(tab t){
       TextArea t = textareas.get(i);
       if(parentTab==null)t.mouse = getMouse();
       else t.mouse = getMouse(mouse);
+      if(scrollable&&vscroll)t.y = t.by - sliderv.value;
+      if(scrollable&&hscroll)t.x = t.bx - sliderh.value;
       t.toggle=1;
       t.draw(canvas);
     }
@@ -935,14 +1008,17 @@ void setCanvas(tab t){
       Window w = windows.get(i);
       //w.toggle = true;
       
-      w.display_grid();
+      w.displayGrid();
     }
   };
 
   void drawTable_s() {
     for (int i=0; i<tables.size(); i++) {
       Table_ t = tables.get(i);
+      if(scrollable&&vscroll)t.y = t.by - sliderv.value;
+      if(scrollable&&hscroll)t.x = t.bx - sliderh.value;
       t.draw();
+      
     }
   };
 
@@ -967,11 +1043,60 @@ void setCanvas(tab t){
       Dropdown d = dmenus.get(i);
       d.setRadius(a);
     }
+    
+    for (int i=0; i<menus.size(); i++) {
+      Menu d = menus.get(i);
+      d.setRadius(a);
+    }
+    
+    for (int i=0; i<sliderBoxes.size(); i++) {
+      sliderBox s = sliderBoxes.get(i);
+      s.menu.setRadius(a);
+    }
+    
+    for (int i=0; i<toggleMenus.size(); i++) {
+      toggleMenu s = toggleMenus.get(i);
+      s.menu.setRadius(a);
+    }
+  };
+  
+  void setRadius(float a,float b,float c,float d){
+    r1 = a;
+    r2 = b;
+    r3 = c;
+    r4 = d;
+    
+    title.r1 = a;
+    title.r2 = b;
+    
+    for (int i=0; i<dmenus.size(); i++) {
+      Dropdown d1 = dmenus.get(i);
+      d1.setRadius(a,b,c,d);
+    }
+    
+    for (int i=0; i<menus.size(); i++) {
+      Menu m = menus.get(i);
+      m.setRadius(a,b,c,d);
+    }
+    
+    for (int i=0; i<sliderBoxes.size(); i++) {
+      sliderBox s = sliderBoxes.get(i);
+      s.menu.setRadius(a,b,c,d);
+    }
+    
+    for (int i=0; i<toggleMenus.size(); i++) {
+      toggleMenu t = toggleMenus.get(i);
+      t.menu.setRadius(a,b,c,d);
+    }
   };
   
   void setAlignment(String s){
     
     if(s=="CENTER"||s=="center"||s=="Center"){
+      if(title!=null){
+        title.txoff = (title.w-textWidth(title.label))/2;
+        
+      }
       
       for (int i=0; i<windows.size(); i++) {
         Window w = windows.get(i);
@@ -1008,6 +1133,13 @@ void setCanvas(tab t){
       for (int i=0; i<sliderBoxes.size(); i++) {
         sliderBox s1 = sliderBoxes.get(i);
         s1.x = (w-s1.w)/2;
+        s1.menu.x = (w-s1.w)/2;
+      }
+      
+      for (int i=0; i<toggleMenus.size(); i++) {
+        toggleMenu s1 = toggleMenus.get(i);
+        s1.x = (w-s1.w)/2-s1.menu.items.get(0).rx;
+        //s1.menu.x = (w-s1.w)/2;
       }
       
       for (int i=0; i<dmenus.size(); i++) {
@@ -1023,6 +1155,11 @@ void setCanvas(tab t){
     }
     
     if(s=="RIGHT"||s=="right"||s=="Right"){
+      
+      if(title!=null){
+        title.txoff = (title.w-textWidth(title.label))/2-((title.w-textWidth(title.label))/2)/2;
+        
+      }
       
       for (int i=0; i<windows.size(); i++) {
         Window w = windows.get(i);
@@ -1061,6 +1198,12 @@ void setCanvas(tab t){
         s1.x = (w-s1.w)-((w-s1.w))/4;
       }
       
+      for (int i=0; i<toggleMenus.size(); i++) {
+        toggleMenu s1 = toggleMenus.get(i);
+        s1.x = (w-s1.w)-((w-s1.w))/4-s1.menu.items.get(0).rx;
+        //s1.menu.x = (w-s1.w)/2;
+      }
+      
       for (int i=0; i<dmenus.size(); i++) {
         Dropdown d = dmenus.get(i);
         d.x = (w-d.w)-((w-d.w))/4;
@@ -1072,6 +1215,11 @@ void setCanvas(tab t){
     }
     
     if(s=="LEFT"||s=="left"||s=="Left"){
+      
+      if(title!=null){
+        title.txoff = 5;
+        
+      }
       
       for (int i=0; i<windows.size(); i++) {
         Window w = windows.get(i);
@@ -1107,6 +1255,12 @@ void setCanvas(tab t){
         s1.x = 5;
       }
       
+      for (int i=0; i<toggleMenus.size(); i++) {
+        toggleMenu s1 = toggleMenus.get(i);
+        s1.x = 5-s1.menu.items.get(0).rx;
+        //s1.menu.x = (w-s1.w)/2;
+      }
+      
       for (int i=0; i<dmenus.size(); i++) {
         Dropdown d = dmenus.get(i);
         d.x = 5;
@@ -1119,4 +1273,118 @@ void setCanvas(tab t){
       }
     }
   };
+  
+  void selfToggle(int i,int j){
+    if(i<menus.size()&&j<menus.get(i).items.size()){
+      PVector mouse = getMouse();
+      menus.get(i).self_toggle(j,mouse);
+      
+    }else {
+      
+      if(title!=null){if(mousePressed)println("tab",title.label,"button or menu not found");}
+      else if(mousePressed)println("tab: button or menu not found");
+      
+    }
+      
+  };
+  
+  boolean getToggle(int i,int j){
+    
+    if(i<menus.size()&&j<menus.get(i).items.size()){
+      
+      Button b = menus.get(i).items.get(j);
+      
+      if(b.toggle==1)return true;
+      else return false;
+      
+    }else {
+      
+      if(title!=null){if(mousePressed)println("tab",title.label,"button or menu not found.");}
+      else if(mousePressed)println("tab: button or menu not found.");
+      return false;
+      
+    }
+  };
+  
+  boolean getToggleMenu(int i,int j){
+    
+    if(i<toggleMenus.size()&&j<toggleMenus.get(i).menu.items.size()){
+      
+      Button b = toggleMenus.get(i).menu.items.get(j);
+      
+      if(b.toggle==1)return true;
+      else return false;
+      
+    }else {
+      
+      if(title!=null){if(mousePressed)println("tab",title.label,"button or menu not found.");}
+      else if(mousePressed)println("tab: button or menu not found.");
+      return false;
+      
+    }
+  };
+  
+  float getValue(int i,int j){
+    if(i<sliderBoxes.size()&&j<sliderBoxes.get(i).menu.sliders.size()){
+      
+      Slider b = sliderBoxes.get(i).menu.sliders.get(j);
+      
+      return b.value;
+      
+    }else {
+      
+      if(title!=null)if(mousePressed){println("tab",title.label,"slider or sliderBox not found.");}
+      else if(mousePressed)println("tab: slider or sliderBox not found.");
+      return -99999;
+      
+    }
+  };
+  
+  void setValue(int i,int j,float start,float end){
+    if(i<sliderBoxes.size()&&j<sliderBoxes.get(i).menu.sliders.size()){
+      
+      Slider b = sliderBoxes.get(i).menu.sliders.get(j);
+      
+      b.set(start,end);
+      
+    }else {
+      
+      if(title!=null){if(mousePressed)println("tab",title.label,"slider or sliderBox not found.");}
+      else if(mousePressed)println("tab: slider or sliderBox not found.");
+      
+    }
+  };
+  
+  void setValue(int i,int j,float start,float end,Object o,String field){
+    if(i<sliderBoxes.size()&&j<sliderBoxes.get(i).menu.sliders.size()){
+      
+      Slider b = sliderBoxes.get(i).menu.sliders.get(j);
+      
+      b.set(start,end);
+      
+    }else {
+      
+      if(title!=null){if(mousePressed)println("tab",title.label,"slider or sliderBox not found.");}
+      else if(mousePressed)println("tab: slider or sliderBox not found.");
+      
+    }
+  };
+  
+  void setIntValue(int i,int j,int start,int end){
+    if(i<sliderBoxes.size()&&j<sliderBoxes.get(i).menu.sliders.size()){
+      
+      Slider b = sliderBoxes.get(i).menu.sliders.get(j);
+      
+       b.setint(start,end);
+      
+    }else {
+      
+      if(title!=null){if(mousePressed)println("tab",title.label,"slider or sliderBox not found.");}
+      else if(mousePressed)println("tab: slider or sliderBox not found.");
+      
+    }
+  };
+  
+  
+  
 };

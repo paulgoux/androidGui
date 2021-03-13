@@ -71,9 +71,9 @@
     complexsub = new Menu(W-200,H-200,90,complexmenu);
     convertToPath = new Menu(mouseX,mouseY,90,convertmenu);
     connectedlMenu = new Menu(mouseX,mouseY,90,connectedlMenul);
-    //settings = new sliderBox(mouseX,mouseY,90,5,settingsLabel);
-    //settings.menu.draggable = false;
-    //if(settings.tooltip!=null)settings.tooltip.visible = false;
+    settings = new sliderBox(mouseX,mouseY,90,5,settingsLabel,false);
+    settings.menu.draggable = false;
+    if(settings.tooltip!=null)settings.tooltip.visible = false;
     type = -1;
     
     setupPallete();
@@ -865,7 +865,7 @@
      }
       if((open||none)){
         
-         settings.visible = false;
+         //settings.visible = false;
        
        if(showgrid){
          if(gridlayout==null){
@@ -1908,7 +1908,7 @@
     Boundary n;
     //temp = new ArrayList<
     
-      if (toggle&&!menudown&&mousePressed&&!open_menus&&mouseButton == LEFT&&mouseX>main.x&&mouseY>main.y&&shapes.toggle==0){
+      if (toggle&&!menudown&&mousePressed&&!open_menus&&mouseButton == LEFT&&mouseX>BMS.main.x&&mouseY>BMS.main.y){
        
       mdown = true;
       ax = mouseX;

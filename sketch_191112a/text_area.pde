@@ -2,7 +2,7 @@ class TextArea{
   
   int id,toggle,cols,rows,size,t,timer = 101,blkrate = 30,t1 = blkrate,t2 = blkrate,start,end,hcount,index,lindex,vindex = -1,hindex = -1,windex,vpos = 0,hpos,sltcounter,vcount = 0
       ,delay=10, maxCount = 51;
-  float x,y,w,h,textsize = 12,twidth = 0,posx,posy,tposx,tposy,strposx,strposy,tbwidth,strwidth,strheight,cursorx, cursory,crwidth,totalwidth;
+  float x,y,w,h,bx,by,bh,bw,textsize = 12,twidth = 0,posx,posy,tposx,tposy,strposx,strposy,tbwidth,strwidth,strheight,cursorx, cursory,crwidth,totalwidth;
   public float inputDelay = 9,delay2 = 5;
   String label,text,label_backup,cboard = "",value;
   boolean drag,resize,hover,border,background,hidden,fill = true,init,ready,label_bool,clear,copied,tbox = true,tsize = false,parentCanvas,setDelay,firstPress,getChar;
@@ -31,6 +31,10 @@ class TextArea{
     y = Y;
     w = WW;
     h = HH;
+    bx = x;
+    by = y;
+    bw = w;
+    bh = h;
     cols = Cols;
     rows = Rows;
     totalwidth = w * rows;
@@ -47,6 +51,10 @@ class TextArea{
     y = Y;
     w = WW;
     h = HH;
+    bx = x;
+    by = y;
+    bw = w;
+    bh = h;
     cols = Cols;
     rows = Rows;
     totalwidth = w * rows;
@@ -65,6 +73,10 @@ class TextArea{
     y = Y;
     w = WW;
     h = HH;
+    bx = x;
+    by = y;
+    bw = w;
+    bh = h;
     cols = Cols;
     rows = Rows;
     

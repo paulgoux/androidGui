@@ -1,6 +1,6 @@
 class sliderBox{
   
-  float x,y,w,h,vspacing,hspacing;
+  float x,y,bx = x,by = y,w,bw = w,h,bh = h,vspacing,hspacing;
   int id;
   Slider sliderR,sliderB,sliderG,sliderSelected;
   ArrayList<Slider> sliders = new ArrayList<Slider>();
@@ -24,6 +24,7 @@ class sliderBox{
     y = yy;
     w = ww;
     h = (10 + S) * Labels.length - S;
+    
     vspacing = S;
     
     menu = new Menu(x,y,w,h);
@@ -54,6 +55,185 @@ class sliderBox{
     
   };
   
+  sliderBox(float xx, float yy,float ww,float H,float S,String [] Labels,int k){
+    
+    
+    x = xx;
+    y = yy;
+    w = ww;
+    h = (H+S) * Labels.length;
+    
+    bx = x;
+    by = y;
+    bw = w;
+    bh = H;
+    menu = new Menu(x,y,w,h);
+    menu.highlightable = false;
+    menu.visible = false;
+    menu.type = 2;
+    menu.spacing = vspacing;
+    menu.vertical = false;
+    menu.slide = false;
+    menu.draggable = true;
+    menu.show = true;
+    
+    if(k==0){
+      h = (w/2+20+S) * Labels.length;
+      for(int i=0;i<Labels.length;i++){
+        float ypos = y+w/2 + (y+w/2 + S+80) *i;
+        Slider a =  new Slider(x +w/2,ypos,w,H,Labels[i]);
+        a.id = i;
+        a.classic = false;
+        a.pie = true;
+        a.square = true;
+        a.parent = menu;
+        a.valuex = 2*PI;
+        a.radius = w/2;
+        sliders.add(a);
+        menu.sliders.add(a);
+      }
+      println("slider",x,y,bx,by);
+    }
+    if(k==1){
+      for(int i=0;i<Labels.length;i++){
+        float ypos = y+w/2 +(y + w/2 + S) *i;
+        Slider a =  new Slider(x +w/2,ypos,w,H,Labels[i]);
+        a.id = i;
+        a.classic = false;
+        a.pie = true;
+        a.radio = true;
+        a.parent = menu;
+        a.valuex = 2*PI;
+        a.radius = w/2;
+        sliders.add(a);
+        menu.sliders.add(a);
+      }
+    }
+    if(k==2){
+      for(int i=0;i<Labels.length;i++){
+        float ypos = y + 10 *i;
+        Slider a =  new Slider(x ,ypos,w,H,Labels[i]);
+        a.id = i;
+        a.matrix = true;
+        a.bar = true;
+        a.parent = menu;
+        a.valuex = a.w/2;
+        sliders.add(a);
+        menu.sliders.add(a);
+      }
+    }
+    if(k==3){
+      for(int i=0;i<Labels.length;i++){
+        float ypos = y + 10 *i;
+        Slider a =  new Slider(x ,ypos,w,H,Labels[i]);
+        a.id = i;
+        a.matrix = true;
+        a.radio = true;
+        a.parent = menu;
+        a.valuex = 2*PI;
+        sliders.add(a);
+        menu.sliders.add(a);
+      }
+    }
+    
+    createTooltip();
+    
+    //BMS.sliderBoxes.add(this);
+    
+  };
+  
+  sliderBox(float xx, float yy,float ww,float H,float S,String [] Labels,float[] values,int k){
+    
+    
+    x = xx;
+    y = yy;
+    w = ww;
+    h = (H+S) * Labels.length;
+    
+    bx = x;
+    by = y;
+    bw = w;
+    bh = H;
+    
+    menu = new Menu(x,y,w,h);
+    menu.highlightable = false;
+    menu.visible = false;
+    menu.type = 2;
+    menu.spacing = vspacing;
+    menu.vertical = false;
+    menu.slide = false;
+    menu.draggable = true;
+    menu.show = true;
+    
+    if(k==0){
+      h = (w/2+20+S) * Labels.length;
+      for(int i=0;i<Labels.length;i++){
+        float ypos = y+w/2 + (y+w/2 + S+80) *i;
+        Slider a =  new Slider(x +w/2,ypos,w,H,Labels[i]);
+        a.id = i;
+        a.classic = false;
+        a.pie = true;
+        a.square = true;
+        a.parent = menu;
+        a.valuex = 2*PI;
+        a.radius = w/2;
+        sliders.add(a);
+        menu.sliders.add(a);
+      }
+    }
+    if(k==1){
+      for(int i=0;i<Labels.length;i++){
+        float ypos = y+w/2 +(y + w/2 + S) *i;
+        Slider a =  new Slider(x +w/2,ypos,w,H,Labels[i]);
+        a.id = i;
+        a.classic = false;
+        a.pie = true;
+        a.radio = true;
+        a.parent = menu;
+        a.valuex = 2*PI;
+        a.radius = w/2;
+        sliders.add(a);
+        menu.sliders.add(a);
+      }
+    }
+    if(k==2){
+      for(int i=0;i<Labels.length;i++){
+        float ypos = y + 10 *i;
+        Slider a =  new Slider(x ,ypos,w,H,Labels[i]);
+        a.id = i;
+        a.matrix = true;
+        a.bar = true;
+        a.parent = menu;
+        a.valuex = a.w/2;
+        sliders.add(a);
+        menu.sliders.add(a);
+      }
+    }
+    if(k==3){
+      for(int i=0;i<Labels.length;i++){
+        float ypos = y + 10 *i;
+        Slider a =  new Slider(x ,ypos,w,H,Labels[i]);
+        a.id = i;
+        a.matrix = true;
+        a.radio = true;
+        a.parent = menu;
+        a.valuex = 2*PI;
+        sliders.add(a);
+        menu.sliders.add(a);
+      }
+    }
+    if(k==0);
+    for(int i=0;i<menu.sliders.size();i++){
+      Slider a = menu.sliders.get(i);
+      a.value = values[i];
+      a.valuex = map(a.value,0,255,0,2*PI);
+    }
+    createTooltip();
+    
+    //BMS.sliderBoxes.add(this);
+    
+  };
+  
   sliderBox(float xx, float yy,float ww,float S,String [] Labels,boolean bool){
     
     x = xx;
@@ -61,6 +241,10 @@ class sliderBox{
     w = ww;
     h = (10 + S) * Labels.length - S;
     vspacing = S;
+    bx = x;
+    by = y;
+    bw = w;
+    bh = H;
     
     menu = new Menu(x,y,w,h);
     menu.highlightable = false;
@@ -95,6 +279,10 @@ class sliderBox{
     w = ww;
     h = (10 + S) * Labels.length - S;
     vspacing = S;
+    bx = x;
+    by = y;
+    bw = w;
+    bh = H;
     
     menu = new Menu(x,y,w,h);
     menu.highlightable = false;
@@ -137,6 +325,10 @@ class sliderBox{
     w = ww;
     h = (10 + S) * Labels.length - S;
     vspacing = S;
+    bx = x;
+    by = y;
+    bw = w;
+    bh = H;
     
     menu = new Menu(x,y,w,h);
     menu.highlightable = false;
@@ -178,6 +370,10 @@ class sliderBox{
     y = yy;
     w = ww;
     h = (10 + S) * Labels.length - S;
+    bx = x;
+    by = y;
+    bw = w;
+    bh = H;
     vspacing = S;
     
     menu = new Menu(x,y,w,h);
@@ -212,6 +408,11 @@ class sliderBox{
     y = yy;
     w = ww;
     h = (10 + S) * Labels.length - S;
+    bx = x;
+    by = y;
+    bw = w;
+    bh = H; 
+    
     vspacing = S;
     
     menu = new Menu(x,y,w,h,Label);
@@ -245,6 +446,11 @@ class sliderBox{
     y = yy;
     w = ww;
     h = (10 + S) * Labels.length - S;
+    bx = x;
+    by = y;
+    bw = w;
+    bh = H;
+    
     vspacing = S;
     
     menu = m;
@@ -275,6 +481,10 @@ class sliderBox{
     x = xx;
     y = yy;
     w = ww;
+    bx = x;
+    by = y;
+    bw = w;
+    bh = H;
     
     menu = new Menu(x,y,w,h);
     menu.highlightable = false;
@@ -328,14 +538,24 @@ class sliderBox{
     
     if(tdown&&tooltip!=null){
       tooltip.mouse = new PVector(mouseX-parentTab.x,mouseY-parentTab.y);
-      canvas.fill(0);
-      canvas.ellipse(tooltip.mouse.x,tooltip.mouse.y,20,20);
       tooltip.setParentCanvas(canvas);
       tooltip.draw(canvas);
     }
     mouse = new PVector(mouseX-parentTab.x,mouseY-parentTab.y);
-    logic(canvas);
+    //logic(canvas);
     drawToolTip(canvas);
+  };
+  
+  void drawPie(){
+    if(visible){
+      //menu.sliderBoxP = this;
+      //if(tooltip.items.get(3).toggle!=1)
+      menu.draw();
+      if(t2down&&tooltip!=null)
+      tooltip.draw();
+      logic();
+      drawToolTip();
+    }
   };
   
   void logic(){
@@ -434,14 +654,26 @@ class sliderBox{
 
   void logic(PGraphics canvas){
     canvas.fill(0);
-    if(mousePressed&&!m3down&&!pos(mouse)&&!tooltipPos(mouse)){
-      m3down = true;
-    }
-    if(mousePressed&&m3down&&(pos(mouse)||tooltipPos(mouse))){
-      m4down = true;
-    }
-    if(mousePressed&&m4down&&(!pos(mouse)&&!tooltipPos(mouse))){
-      m4down = false;
+    if(tooltip!=null){
+      if(mousePressed&&!m3down&&!pos(mouse)&&!tooltipPos(mouse)){
+        m3down = true;
+      }
+      if(mousePressed&&m3down&&(pos(mouse)||tooltipPos(mouse))){
+        m4down = true;
+      }
+      if(mousePressed&&m4down&&(!pos(mouse)&&!tooltipPos(mouse))){
+        m4down = false;
+      }
+    }else{
+      if(mousePressed&&!m3down&&!pos(mouse)){
+        m3down = true;
+      }
+      if(mousePressed&&m3down&&(pos(mouse))){
+        m4down = true;
+      }
+      if(mousePressed&&m4down&&(!pos(mouse))){
+        m4down = false;
+      }
     }
     if(menu.draggable&&menu.drag){
       if(tooltip!=null){
@@ -475,12 +707,12 @@ class sliderBox{
     
     
     if(!mousePressed)mdown = false;
-    if(!tooltipPos(mouse)&&!tooltip.pos(mouse))tdown = false;
+    if(tooltip!=null&&!tooltipPos(mouse)&&!tooltip.pos(mouse))tdown = false;
     if(tdown&&!mousePressed&&!m4down&&tooltipPos(mouse))t2down = true;
     //if(tdown&&mousePressed)t2down = true;
     
-    if(!mousePressed)mdown = false;
-    if(tdown&&!mousePressed&&!t2down)t2down = true;
+    //if(!mousePressed)mdown = false;
+    //if(tdown&&!mousePressed&&!t2down)t2down = true;
     if(t2down){
       
       if(tooltip!=null&&tooltip.items.get(0).pos(mouse)&&mousePressed){
@@ -582,6 +814,7 @@ class sliderBox{
       Slider s = menu.sliders.get(i);
       
       s.setint(0,255);
+      s.value = floor(s.value);
     }
   };
   
@@ -746,6 +979,67 @@ class sliderBox{
     
   };
   
+  void setBar(){
+    for(int i=0;i<menu.sliders.size();i++){
+      Slider s = menu.sliders.get(i);
+      s.bar = true;
+      s.radio = false;
+      s.square = false;
+      s.pie = false;
+      s.matrix = false;
+      s.classic = true;
+    };
+  };
+  
+  void setSquare(){
+    for(int i=0;i<menu.sliders.size();i++){
+      Slider s = menu.sliders.get(i);
+      s.bar = false;
+      s.radio = false;
+      s.square = true;
+      s.pie = false;
+      s.matrix = false;
+      s.classic = true;
+      //println(s);
+    };
+  };
+  
+  void setRadio(){
+    for(int i=0;i<menu.sliders.size();i++){
+      Slider s = menu.sliders.get(i);
+      s.bar = false;
+      s.radio = true;
+      s.square = false;
+      s.pie = false;
+      s.matrix = false;
+      s.classic = true;
+    };
+  };
+  
+  void setMatrix(){
+    for(int i=0;i<menu.sliders.size();i++){
+      Slider s = menu.sliders.get(i);
+      s.bar = false;
+      s.radio = false;
+      s.square = false;
+      s.pie = false;
+      s.matrix = true;
+      s.classic = false;
+    };
+  };
+  
+  void setPie(){
+    for(int i=0;i<menu.sliders.size();i++){
+      Slider s = menu.sliders.get(i);
+      s.bar = false;
+      s.radio = false;
+      s.square = false;
+      s.pie = true;
+      s.matrix = false;
+      s.classic = false;
+    };
+  };
+  
   void setDrag(Boolean a){
     menu.draggable = a;
   };
@@ -768,19 +1062,42 @@ class sliderBox{
   };
   
   boolean tooltipPos(PVector m,PGraphics c){
-    if(m.x>menu.x+menu.w&&m.x<menu.x+menu.w+50&&m.y>menu.y-50&&m.y<menu.y){
-    c.fill(255);
-      c.ellipse(mouse.x,mouse.y,20,20);
-  }
-    //return m.x>menu.x+menu.w&&m.x<menu.x+menu.w+50&&m.x>menu.y-50&&m.x<menu.y;
     return mouseX>menu.x+menu.w+parentTab.x&&mouseX<menu.x+menu.w+50+parentTab.x&&mouseY>menu.y-50+parentTab.y&&mouseY<menu.y+parentTab.y;
   };
   
   boolean tooltipPos2(PVector m){
-    if(m.x>menu.x+menu.w&&m.x<menu.x+menu.w+50&&m.y>menu.y-50&&m.y<menu.y){
-      
-    }
-    //return m.x>menu.x+menu.w&&m.x<menu.x+menu.w+50&&m.x>menu.y-50&&m.x<menu.y;
     return m.x>menu.x+menu.w&&m.x<menu.x+menu.w+50&&m.y>menu.y-50&&m.y<menu.y;
+  };
+  
+  void setStart(float start){
+    for(int i=0;i<menu.sliders.size();i++){
+      Slider s = menu.sliders.get(i);
+      
+      s.startvalue = start;
+    }
+  };
+  
+  void setEnd(float end){
+    for(int i=0;i<menu.sliders.size();i++){
+      Slider s = menu.sliders.get(i);
+      
+      s.endvalue = end;
+    }
+  };
+  
+  void setFloat(int i,float a,float b){
+    if(i<menu.sliders.size()){
+      Slider s = menu.sliders.get(i);
+      s.startvalue = a;
+      s.endvalue = b;
+    }
+  };
+  
+  void setFloat(int i,int a,int b){
+    if(i<menu.sliders.size()){
+      Slider s = menu.sliders.get(i);
+      s.startvalue = a;
+      s.endvalue = b;
+    }
   };
 };

@@ -1,11 +1,12 @@
 class Window extends Scene{
   
   //float x,y,w,h;
-  float bw,bh, navheight = 50,deltay,transparency = 200,transparency1 = 50,transparency2 = 80,transparency3 = 100,transparency4 = 150;
+  float bw,bh, navheight = 50,deltay,transparency = 200,transparency1 = 50,transparency2 = 80,transparency3 = 100,transparency4 = 150,
+        r1,r2,r3,r4;
   String label,itemLabel;
   int type = 0,index = -1,click,windex = -1,level = 0,wid;
   color main = color(0);
-  color navcol = main,quicknavcol = main,fcol = main,bcol = main,xcol = main,quickNavItemcol = main,navItemcol = main,buttoncol = main,selectcol = main;
+  color navcol = main,quickNavcol = main,fcol = main,bcol = main,xcol = main,quickNavItemcol = main,navItemcol = main,buttoncol = main,selectcol = main;
   //boolean drag,resize,hover,border,background,hidden,fill = true;
   Button child;
   Menu parent;
@@ -13,10 +14,10 @@ class Window extends Scene{
   float bsize = 12,tsize = 12,svalue,svalue2,colwidth = 100,rowheight = 80;;
   
   boolean smdown,ddown,amendslider,initB,launchable = true,quickAccess,navtoggle = true,transparent;
-  public boolean show,open,close;
+  public boolean show,open,close,visible=true;
   ArrayList<Button> buttons = new ArrayList<Button>();
-  ArrayList<Button> quicknav = new ArrayList<Button>();
-  ArrayList<Button> buttongrid = new ArrayList<Button>();
+  ArrayList<Button> quickNav = new ArrayList<Button>();
+  ArrayList<Button> buttonGrid = new ArrayList<Button>();
   ArrayList<Slider> sliders = new ArrayList<Slider>();
   ArrayList<Window> windows = new ArrayList<Window>();
   ArrayList<PVector> track = new ArrayList<PVector>();
@@ -51,7 +52,7 @@ class Window extends Scene{
     
     x = xx;
     y = yy;
-    w = ww;
+    w = 500;
     h = hh;
     bw = w;
     bh = h;
@@ -110,10 +111,10 @@ class Window extends Scene{
       a.textbtm = true;
       a.tcol = 0;
       a.border = false;
-      buttongrid.add(a);
+      buttonGrid.add(a);
     }
      cols = 5;
-     rows = round(buttongrid.size()/cols)+1;
+     rows = round(buttonGrid.size()/cols)+1;
     
     b = new Boundary(x,y-50,cols*colwidth,5*rowheight + navheight,4);
     Boundaries.add(b);
@@ -227,10 +228,10 @@ class Window extends Scene{
       a.tcol = 0;
       a.textbtm = true;
       a.border = false;
-      buttongrid.add(a);
+      buttonGrid.add(a);
     }
     cols = 5;
-    rows = round(buttongrid.size()/cols);
+    rows = round(buttonGrid.size()/cols);
     windows.add(this);
     
     Button b2 = new Button(x+w - 80,y - 40 + 10, 30,30,"Back");
@@ -264,32 +265,32 @@ class Window extends Scene{
      n.textbtm = true;
      n.border = false;
      n.tcol = 0;
-     quicknav.add(n);
+     quickNav.add(n);
      n = new Button(x - 35,y + 50,25,25,"Documents");
      n.textbtm = true;
      n.border = false;
      n.tcol = 0;
-     quicknav.add(n);
+     quickNav.add(n);
      n = new Button(x - 35,y + 100,25,25,"Downloads");
      n.textbtm = true;
      n.border = false;
      n.tcol = 0;
-     quicknav.add(n);
+     quickNav.add(n);
   };
   
   
   void render(){
-    
-    if(!hidden){
+    if(toggle){
       stroke(0);if(!border)noStroke();
       noFill();
+      fill(BMS.tabcol);
       rect(x,y,w,h);
       display();
       draw();
       functions();
       fill(255);
       for(int i=0;i<scenes.size();i++){
-        //scenes.get(i).display();
+        scenes.get(i).display();
       }
     }
     sLogic();
@@ -306,11 +307,11 @@ class Window extends Scene{
   void display(){
     if(sliders.size()>0)h = sliders.get(0).h;
     if(toggle||show){
-    boundingbox();
-    submenu();
-    menu();
-    scrollbar();
-    wlogic();
+      boundingbox();
+      submenu();
+      menu();
+      scrollbar();
+      wlogic();
     
     if(Boundaries.size()>0)Boundaries.get(0).draw2();
     }
@@ -318,15 +319,15 @@ class Window extends Scene{
   
   void boundingbox(){
     noStroke();
-    if(!transparent)fill(255);
-    else fill(255,transparency);
-    // rect(x,y,w,h);
-    // rect(x,y-10,w,10);
+    if(!transparent)fill(BMS.tabcol);
+    else fill(BMS.tabcol,transparency);
+     rect(x,y,w,h,r1,r2,r3,r4);
+     rect(x,y-10,w,10);
     
-    // fill(0,transparency4);
-    // rect(x,y,w,h);
-    // fill(0,transparency1);
-    // rect(x,y-10,w,10);
+     fill(0,transparency4);
+     rect(x,y,w,h,r1,r2,r3,r4);
+     fill(0,transparency1);
+     rect(x,y-10,w,10);
   };
   
   void menu(){
@@ -385,9 +386,9 @@ class Window extends Scene{
             noStroke();
             //if(b.border)strokeWeight(1);
             fill(255);
-            rect(b.x,y,b.w,dy2);
+            rect(b.x,y,b.w,dy2,r1,r2,r3,r4);
             fill(0,150);
-            rect(b.x,y,b.w,dy2);
+            rect(b.x,y,b.w,dy2,r1,r2,r3,r4);
           }
           //b.draw();
           else b.visible = true;
@@ -405,6 +406,12 @@ class Window extends Scene{
         s.y = y;
         s.draw();
         s.mouseFunctions();
+        s = sliders.get(0);
+        s.r1 = 0;
+        s.r2 = 0;
+        s.r3 = 0;
+        s.r4 = 0;
+        
     }
   };
   
@@ -414,8 +421,8 @@ class Window extends Scene{
       
         s.x = x+w-10;
         s.y = y;
-        // s.draw(mouse);
-        // s.mouseFunctions(mouse);
+         //s.draw(mouse);
+         //s.mouseFunctions(mouse);
     }
   };
   
@@ -463,8 +470,8 @@ class Window extends Scene{
     }
   };
   
-  void display_grid(){
-    h = sliders.get(1).h;
+  void displayGrid(){
+    if(sliders.get(1)!=null)h = sliders.get(1).h;
     if(close){
       toggle = false;
       open = false;
@@ -477,39 +484,45 @@ class Window extends Scene{
     }
     //else open = false;
     
-    if(open){
-      gridscrollbar();
+    if(open&&visible){
+      
       gridboundingbox();
       nav_();
       grid();
       drawQuicknav();
       drawBorder();
+      gridscrollbar();
       gridlogic();
       
-      
+      if(pos()){
+        fill(0);
+        ellipse(mouseX,mouseY,20,20);
+      };
     }
     
   };
   
   void drawQuicknav(){
     noStroke();
+    
     if(quickAccess&&navtoggle){
       
         if(!transparent)fill(255);
         else fill(255,transparency);
-        rect(x - 80,y - 50,80,h + 50);
-        //text("Back",)
-        fill(0,transparency1);
-        rect(x - 80,y - 50,80,h + 50);
+        rect(x - 80,y - 50,80,h + 50,r1,0,0,r4);
+        
+        if(!transparent)fill(BMS.hcol);
+        else fill(BMS.fcol,transparency);
+        rect(x - 80,y - 50,80,h + 50,r1,0,0,r4);
       
-      for(int i=0;i<quicknav.size();i++){
-        Button b = quicknav.get(i);
+      for(int i=0;i<quickNav.size();i++){
+        Button b = quickNav.get(i);
         b.x = x - 70;
         b.y = y + 20 + 50 * i;
         //fill(0);
         b.draw();
         fill(0);
-        text(b.label,b.x-20,b.h+b.y+20);
+        //text(b.label,b.x-20,b.h+b.y+20);
         b.highlight();
       }
     }
@@ -524,6 +537,12 @@ class Window extends Scene{
       s.draw();
       s.mouseFunctions();
       s.set(0,rows);
+      s = sliders.get(0);
+      s.x = x+cols*colwidth-10;
+      s.y = y;
+      s.draw();
+      s.mouseFunctions();
+      s.set(0,cols);
   };
   
   void gridlogic(){
@@ -532,7 +551,7 @@ class Window extends Scene{
     
     float my = mouseY;
     Button X = nav.get(2);
-    if(dposg()&&mousePressed&&!navPos()){
+    if(dposg()&&mousePressed&&!navPos()&&track.size()==0&&!sliders.get(1).mdown){
       // BMS.currentObject==this;
       // BMS.currentMouseObject==currentf;
       // fill(255,50);
@@ -546,12 +565,13 @@ class Window extends Scene{
     if(sliders.size()>0&&sliders.get(1)!=null){
     if(!ddown&&pos()&&mousePressed&&!dposg()&&!sliders.get(1).pos()&&!mdown&&!ddown&&!sliders.get(1).mdown){
       if(track.size()<2)track.add(new PVector(mouseX,mouseY));
-      //mdown = true;
+      mdown = true;
     }}
     else {
       if(mousePressed&&!dposg()&&!sliders.get(1).pos()&&!mdown&&!ddown){
       if(track.size()<2)track.add(new PVector(mouseX,mouseY));
-      //mdown = true;
+      mdown = true;
+      
     }}
     
     
@@ -565,7 +585,8 @@ class Window extends Scene{
     
     //text(track.size(),100,100);
     if(track.size()>0){
-      
+      fill(0);
+      ellipse(mouseX,mouseY,20,20);
       //noFill();
       fill(0,20);
       stroke(0,50);
@@ -581,7 +602,7 @@ class Window extends Scene{
     Boundary b = Boundaries.get(1);
     
     
-    if(!mdown&&!ddown)X.latch(this,"close");
+    if(!mdown&&!ddown&&!sliders.get(1).mdown)X.latch(this,"close");
     if(ddown){
       
       b.mtranslate(new PVector(mouseX,mouseY));
@@ -615,30 +636,40 @@ class Window extends Scene{
       noStroke();
       if(!transparent)fill(255);
       else fill(255,transparency);
-      rect(x,y,colwidth*cols,rowheight*(5));
+      if(!quickAccess) 
+      rect(x,y,colwidth*cols,rowheight*(5),0,0,r3,r4);
+      else rect(x,y,colwidth*cols,rowheight*(5),0,0,r3,0);
+      if(!transparent)fill(BMS.tabcol);
+      else fill(BMS.tabcol,transparency2);
+      if(!quickAccess) 
+      rect(x,y,colwidth*cols,rowheight*(5),0,0,r3,r4);
+      else rect(x,y,colwidth*cols,rowheight*(5),0,0,r3,0);
       
-      fill(0,transparency3);
+      //fill(0,transparency3);
       //rect(x,y,colwidth*cols,rowheight*(5));
       if(!transparent)fill(255);
       else fill(255,transparency);
-      rect(x,y-navheight,colwidth*cols,navheight);
+      if(!quickAccess)
+      rect(x,y-navheight,colwidth*cols,navheight,r1,r2,0,0);
+      else rect(x,y-navheight,colwidth*cols,navheight,0,r2,0,0);
+      if(!transparent)fill(BMS.hcol);
+      else fill(fcol,transparency);
+      if(!quickAccess)
+      rect(x,y-navheight,colwidth*cols,navheight,r1,r2,0,0);
+      else rect(x,y-navheight,colwidth*cols,navheight,0,r2,0,0);
       
-      fill(0,transparency1);
-      rect(x,y-navheight,colwidth*cols,navheight);
-      fill(0);
-      //if(currentp!=null)text(currentp,x+100,y-20);
   };
   
   void drawBorder(){
     if(!quickAccess&&border||!navtoggle){
         stroke(0);
         noFill();
-        rect(x,y-50,colwidth*cols,h+50);
+        rect(x,y-50,colwidth*cols,h+50,r1,r2,r3,r4);
       }
       else if(quickAccess&&border){
         stroke(0);
         noFill();
-        rect(x - 80,y-50,colwidth*cols+80,h+50);
+        rect(x - 80,y-50,colwidth*cols+80,h+50,r1,r2,r3,r4);
       }
   };
   
@@ -652,37 +683,34 @@ class Window extends Scene{
         b.draw();
         b.highlight();
         
-        if(b.pos()&&mousePressed&&b.label=="Back"&&!smdown){
+        if(b.pos()&&mousePressed&&b.label=="Back"&&!smdown&&track.size()<1){
+          smdown = true;
           if(windows.size()>1){
             windows.remove(windows.size()-1);
             currentp = windows.get(windows.size()-1).link;
             sliders.get(0).value = 0;sliders.get(0).valuey = 0;
           }
         }
-        if(b.pos()&&mousePressed&&b.label=="Forward"&&!smdown&&forward!=null){
+        if(b.pos()&&mousePressed&&b.label=="Forward"&&!smdown&&forward!=null&&track.size()<1){
+          smdown = true;
           Window w1 = new Window(x,y,w,h,forward);
           windows.add(w1);
           currentp = windows.get(windows.size()-1).link;
         }
       }
-      // Button b = nav.get(0);
-      // Button n = nav.get(1);
-      // Button x = nav.get(2);
-      // fill(0);
-      // if(transparent&&b.pos())fill(255);
-      // text(b.label,b.x ,b.y + b.h + 10);
-      // fill(0);
-      // if(transparent&&n.pos())fill(255);
-      // text(n.label,n.x ,n.y + n.h + 10);
-      // fill(0);
-      // if(transparent&&x.pos())fill(255);
-      // textSize(20);
-      // text(x.label,x.x + 10,x.y + 25);
-      // textSize(12);
-      // Button X = nav.get(2);
-      // X.draw();
-      // X.highlight();
-      
+       Button b = nav.get(0);
+       Button n = nav.get(1);
+       Button x = nav.get(2);
+       fill(0);
+       text(b.label,b.x ,b.y + b.h + 10);
+       text(n.label,n.x ,n.y + n.h + 10);
+       text(x.label,x.x + 10,x.y + 25);
+       Button X = nav.get(2);
+       X.tcol = color(0);
+       X.localTheme = true;
+       X.draw();
+       X.highlight();
+      if(!mousePressed)smdown = false;
   };
   
   void grid(){
@@ -695,8 +723,8 @@ class Window extends Scene{
         
         int pos = j+i*cols;
         Button b = null;
-        if(pos<w2.buttongrid.size()){
-        b = w2.buttongrid.get(pos);
+        if(pos<w2.buttonGrid.size()){
+        b = w2.buttonGrid.get(pos);
         Button b1 = w2.buttons.get(pos);
         b1.border = false;
         b.textbtm = true;
@@ -712,7 +740,7 @@ class Window extends Scene{
         if(b.pos())b.highlight();
         
         fill(0); 
-        if(b.pos()&&b.submenu!=null){
+        if(b.pos()&&b.submenu!=null&&track.size()<1){
           int size = currentp.length();
           if(currentp.charAt(size-1)!='\\')currentp += "\\";
            currentl = currentp + b.blabel;
@@ -722,7 +750,7 @@ class Window extends Scene{
         //  if(currentp.charAt(size-1)!='\\')currentp += "\\";
         //   currentf = currentp + b.blabel;
         //}
-        if(b.pos()&&mousePressed&&b1.submenu!=null&&!smdown){
+        if(b.pos()&&mousePressed&&b1.submenu!=null&&!smdown&&track.size()<1){
           int size = currentp.length();
           if(currentp.charAt(size-1)!='\\')currentp += "\\";
           back = currentp;
@@ -735,7 +763,7 @@ class Window extends Scene{
           s.valuex = 0;
           wid = windows.size()-1;
           smdown = true;
-        }else if(b.pos()&&mousePressed&&b1.submenu==null&&!smdown){
+        }else if(b.pos()&&mousePressed&&b1.submenu==null&&!smdown&&track.size()<1){
           int size = currentp.length();
           if(currentp.charAt(size-1)!='\\')currentp += "\\";
           String file = currentp + b.blabel;
@@ -749,6 +777,53 @@ class Window extends Scene{
   
   void navbar(){
     
+  };
+  
+  
+  void setRadius(float a){
+    r1 = a;
+    r2 = a;
+    r3 = a;
+    r4 = a;
+    for(int i=0;i<buttons.size();i++){
+      Button b = buttons.get(i);
+      b.r1 = a;
+      b.r2 = a;
+      b.r3 = a;
+      b.r4 = a;
+    }
+    
+    for(int i=0;i<buttonGrid.size();i++){
+      Button b = buttonGrid.get(i);
+      b.r1 = a;
+      b.r2 = a;
+      b.r3 = a;
+      b.r4 = a;
+    }
+    
+    for(int i=0;i<quickNav.size();i++){
+      Button b = quickNav.get(i);
+      b.r1 = a;
+      b.r2 = a;
+      b.r3 = a;
+      b.r4 = a;
+    }
+    
+    for(int i=0;i<nav.size();i++){
+      Button b = nav.get(i);
+      b.r1 = a;
+      b.r2 = a;
+      b.r3 = a;
+      b.r4 = a;
+    }
+    
+    for(int i=0;i<sliders.size();i++){
+      Slider b = sliders.get(i);
+      b.r1 = a;
+      b.r2 = a;
+      b.r3 = a;
+      b.r4 = a;
+    }
   };
 
   boolean navPos(){
@@ -778,6 +853,6 @@ class Window extends Scene{
     
     return mouseX>x&&mouseX<x+w&&mouseY>y&&mouseY<y+h;
     
-  }
+  };
   
 };

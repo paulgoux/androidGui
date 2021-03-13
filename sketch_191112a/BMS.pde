@@ -3,7 +3,8 @@ class BMScontrols{
   int Mcount;
   HashMap<Object,String> booleans = new HashMap<Object,String>();
   color bgcol = color(50, 235, 225);
-  color col = color(0, 255, 73), bcol = color(255), tcol = color(255), fcol = color(0, 255, 73), hcol = color(0, 255, 73,100),toggleCol = color(55, 84, 63);
+  color col = color(0, 255, 73), bcol = color(255), tcol = color(255), fcol = color(0, 255, 73), hcol = color(0, 255, 73,100),toggleCol = color(55, 84, 63),
+        tabcol = color(0, 150, 255),sliderbgcol = color(255);
   PApplet applet = null;
   boolean updated,autoSave;
   String currentMouseObject;
@@ -22,6 +23,8 @@ class BMScontrols{
   ArrayList<TextArea> textAreas = new ArrayList<TextArea>();
   ArrayList<Button> buttons = new ArrayList<Button>();
   ArrayList<Menu> menus = new ArrayList<Menu>();
+  ArrayList<radioMenu> radioMenus = new ArrayList<radioMenu>();
+  ArrayList<toggleMenu> toggleMenus = new ArrayList<toggleMenu>();
   ArrayList<tab> tabs = new ArrayList<tab>();
   Boundary bb;
   Window main;
@@ -60,16 +63,14 @@ void begin(){
   //sliderBox s = new sliderBox(100,100,90,10,ss);
   setupWindows();
   setupMenus();
-  //setupRGB();
   setupReset();
-  
   setupDock();
 };
 
 
 void setupDock(){
   dock = new Dock(0,height -22,width,24);
-  //dock = b;
+  dock.add(fmenu);
 };
 
 
@@ -93,8 +94,13 @@ void setupWindows(){
   header.border = false;
   footer.border = true;
   footer.col = 0;
-  
+  //println(main);
   fmenu = new Window(200,200,200,200,"C:\\Users\\paul goux\\");
+  fmenu.setRadius(10);
+  fmenu.quickAccess = true;
+  
+  
+  
 };
 
 void setupMenus(){
@@ -102,7 +108,7 @@ void setupMenus(){
   
   //println("iugoiugoiugoiug", Sliders.size());
   //String [] flabels = {"Open","Save","Grid","Plot 2D","Plot 3D","Attractor","Reset"};
-  String [] flabels = {"Background","Camera"};
+  String [] flabels = {"Background","Camera","Window"};
   file = new Menu(20,0,50,70,"File",flabels,0);
   
   BMS.menus.add(file);
@@ -113,20 +119,6 @@ void setupMenus(){
   file.items.get(0).submenu  = new Menu(file.items.get(0).x+file.items.get(0).w,file.items.get(0).y,70,glabels,0);
   file.setLink(0);
   }
-  
-
-  String []ss = {"test1","test2","test3"};
-  float a = 200;
-  sliderBox s = new sliderBox(a,100,90,10,ss);
-  String [] ss1 = {"red","green","blue"};
-  float [] v1 = {52, 235, 225};
-  s = new sliderBox(a,320,90,10,ss1,v1,true);
-  s.visible = false;
-  sliderBoxes.add(s);
-  Slider s1 = new Slider(a,200,90,10,"test");
-  Sliders.add(s1);
-  s1 = new Slider(a,220,90,10,"test1");
-  Sliders.add(s1);
   
 };
 
@@ -157,19 +149,48 @@ void loadImg(){
 
 void run(){
   globalLogic();
-  Menu m1 = sliderBoxes.get(1).menu;
-  Slider r = m1.sliders.get(0);
-  Slider g = m1.sliders.get(1);
-  Slider b = m1.sliders.get(2);
-  bgcol = color(r.value,g.value,b.value);
-  mainFunctions();
+  
   displayButtons();
-  menuFunctions();
+  mainFunctions();
+  
+  radioMenus();
   sliderBoxFunctions();
   sliderFunctions();
+  toggleMenus();
+  
   for(Menu menu : BMS.menus)menu.click();
   menus.get(0).self_toggle(1);
-  menus.get(0).toggle2(0,sliderBoxes.get(1),"visible");
+  menus.get(0).toggle2(2,fmenu,"toggle");
+  dock.logic();
+  dock.drawItems();
+  menuFunctions();
+};
+void toggleMenus(){
+  for(int i=0;i<toggleMenus.size();i++){
+    
+    toggleMenu r = toggleMenus.get(i);
+    r.draw();
+    
+  }
+};
+
+void radioMenus(){
+  for(int i=0;i<radioMenus.size();i++){
+    
+    radioMenu r = radioMenus.get(i);
+    r.draw();
+    
+  }
+};
+
+void selfToggle(int i){
+  if(i<=buttons.size())
+  buttons.get(i).self_toggle();
+};
+
+void selfToggle(int i,PVector m){
+  if(i<=buttons.size())
+  buttons.get(i).self_toggle(m);
 };
 
 void displayButtons(){
@@ -181,10 +202,9 @@ void displayButtons(){
   };
 };
 
-
-
 void mainFunctions(){
-  main.render();
+  
+  fmenu.displayGrid();
 };
 
 
@@ -273,7 +293,7 @@ void sliderBoxFunctions(){
     
     sliderBox s = sliderBoxes.get(i);
     if(s.visible)s.draw();
-    if(i==1)s.setColor();
+    
     //s.tooltip.draw();
     //for(int i=0
     
@@ -469,5 +489,55 @@ void globalLogic(){
   }
 
 };
+
+  boolean getToggle(int i){
+    
+    if(i<menus.size()){
+      Button b = buttons.get(i);
+      
+      if(b.toggle==1)return true;
+      else return false;
+    }else {
+      println("BMS: menu not found");
+      return false;
+    }
+  };
+
+  boolean getToggle(int i,int j){
+    
+      if(i<menus.size()&&j<menus.get(i).items.size()){
+      
+      Button b = menus.get(i).items.get(j);
+      
+      if(b.toggle==1)return true;
+      else return false;
+      
+    }else {
+      
+      println("BMS: button or menu not found.");
+      return false;
+      
+    }
+  };
+
+  void selfToggle(int i,int j){
+    
+    if(i<menus.size()&&j<menus.get(i).items.size()){
+      
+      menus.get(i).self_toggle(j);
+    }else {
+      println("BMS: button or menu not found..");
+    }
+  };
+  
+  void selfToggle(int i,int j,PVector m){
+    
+    if(i<menus.size()&&j<menus.get(i).items.size()){
+      
+      menus.get(i).self_toggle(j,m);
+    }else {
+      println("BMS: button or menu not found..");
+    }
+  };
   
 };

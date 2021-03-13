@@ -549,7 +549,7 @@ class Dropdown extends Menu {
     if(BMS.dropDownObject==null&&pos(mousePos)&&mousePressed&&!mdown&&!dclick&&!slider.mdown&&!drag){
       
         BMS.dropDownObject = this;
-        println("Slider",BMS.dropDownObject);
+        //println("Slider",BMS.dropDownObject);
         dclick = true;
         mdown = true;
     }
@@ -570,6 +570,10 @@ class Dropdown extends Menu {
         mdown = true;
     }}
     if(!mousePressed)mdown = false;
+    if(pos())col = BMS.hcol;
+    else col = BMS.fcol;
+    if(dclick)col = BMS.toggleCol;
+    if(dclick&&pos())col = color(BMS.toggleCol,100);
   };
   
   void selfClick(PVector mouse){
@@ -596,6 +600,12 @@ class Dropdown extends Menu {
         mdown = true;
     }}
     if(!mousePressed)mdown = false;
+    if(pos(mouse))col = BMS.hcol;
+    else col = BMS.fcol;
+    if(dclick)col = BMS.toggleCol;
+    if(dclick&&pos(mouse))col = color(BMS.toggleCol,100);
+    //else col = BMS.fcol;
+    
   };
   
   void toggled(int i,Object o,String c){
@@ -650,6 +660,21 @@ class Dropdown extends Menu {
       b.r2 = a;
       b.r3 = a;
       b.r4 = a;
+    }
+    
+  };
+  
+  void setRadius(float a,float b,float c,float d){
+    r1 = a;
+    r2 = b;
+    r3 = c;
+    r4 = d;
+    for(int i=0;i<items.size();i++){
+      Button k = items.get(i);
+      k.r1 = a;
+      k.r2 = d;
+      k.r3 = c;
+      k.r4 = d;
     }
     
   };

@@ -1,3 +1,14 @@
+import ketai.camera.*;
+import ketai.cv.facedetector.*;
+import ketai.data.*;
+import ketai.net.*;
+import ketai.net.bluetooth.*;
+import ketai.net.nfc.*;
+import ketai.net.nfc.record.*;
+import ketai.net.wifidirect.*;
+import ketai.sensors.*;
+import ketai.ui.*;
+
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -37,19 +48,19 @@ import android.content.Context;
 
 boolean k1 = false;
 int W = 1440,H = 720;
-tab tab1;
+tab tab1,tab2;
 
-Permission storage,camera;
+Permission storage,camera,readStorage;
 PGraphics canvas;
 PShader edges;
-KetaiCamera cam;
+KetaiCamera Cam;
+Camera cam;
+
 float counter,mult;
 boolean mdown;
 
 void settings(){
-  
   size(W,H,P2D);
-  //size(W,H,P2D);
 };
 
 
@@ -58,26 +69,34 @@ void setup(){
   canvas = createGraphics(W,H,P2D);
   edges = loadShader("edges.glsl");
   storage = new Permission(this,"WRITE_EXTERNAL_STORAGE");
+  readStorage = new Permission(this,"READ_EXTERNAL_STORAGE");
   camera = new Permission(this,"CAMERA");
-  cam = new KetaiCamera(this, 1440, 720, 60);
   BMS = new BMScontrols(this);
   BMS.begin();
-  tab1 = new tab(500,200,200,300,"tab1");
-  tab1.toggle = true;
-  tab1.visible = true;
-  tab1.draggable = true;
+  Cam = new KetaiCamera(this,W,H,60);
+  cam = new Camera(Cam);
   
-  String []s = {"test","test1","test2"};
-  Menu menu = new Menu(10,40,100,s);
-  menu.setRadius(5);
-  Dropdown dMenu = new Dropdown(10,115,100,s);
-  sliderBox s1 = new sliderBox(50,150,90,10,s,false);
-  s1.menu.draggable = false;
-  tab1.add(menu);
-  tab1.add(dMenu);
-  tab1.add(s1);
-  tab1.setRadius(10);
-  tab1.setAlignment("center");
+  
+  tab2 = new tab(720,200,200,400,"Background");
+  tab2.toggle = true;
+  tab2.visible = true;
+  tab2.draggable = true;
+  tab2.scrollable = true;
+  tab2.vscroll = true;
+  
+  String [] s3 = {"red","green","blue"};
+  float [] v1 = {52, 235, 225};
+  sliderBox sl2 = new sliderBox(0,40,90,90,10,s3,v1,0);
+  sl2.menu.draggable = false;
+  sl2.tooltip = null;
+  sl2.setStart(0);
+  sl2.setEnd(255);
+  tab2.add(sl2);
+  tab2.setAlignment("center");
+  tab2.setRadius(10);
+  
+  BMS.dock.add(tab2);
+  BMS.dock.setRadius(10);
   BMS.menus.get(0).setRadius(10);
   BMS.menus.get(0).setAlignment("center");
   
@@ -88,12 +107,25 @@ void draw(){
   background(BMS.bgcol);
   //background(50);
   text(frameRate,50,100);
-  
-  displayCam();
+  cam.displayCam();
+  logic();
   BMS.run();
   
-  tab1.displayTab();
+};
+
+void logic(){
+  if(tab2.sliderBoxes.size()>0){
+    Menu m1 = tab2.sliderBoxes.get(0).menu;
+    Slider r = m1.sliders.get(0);
+    Slider g = m1.sliders.get(1);
+    Slider b = m1.sliders.get(2);
+    BMS.bgcol = color(r.value,g.value,b.value);
+  }
   
+  BMS.selfToggle(0,0);
+  tab2.sliderv.set(0,200);
+  if(BMS.getToggle(0,0))
+  tab2.displayTab();
 };
 
 void onCameraPreviewEvent(){

@@ -1,7 +1,7 @@
 class Table_ {
 
   int rows, cols, bcols, brows;
-  float x, y, w, h, bw, bh, xpadding, ypadding;
+  float x, y, w, h, bx, by, bw, bh, xpadding, ypadding;
 
   ArrayList<TextBox> grid = new ArrayList<TextBox>();
   ArrayList<Button> Buttons = new ArrayList<Button>();
@@ -14,6 +14,8 @@ class Table_ {
     this.y = y;
     this.w = w;
     this.h = h;
+    bx = x;
+    by = y;
     this.cols = cols;
     this.rows = rows;
     bcols = cols;
@@ -40,6 +42,8 @@ class Table_ {
     this.y = y;
     this.w = w;
     this.h = h;
+    bx = x;
+    by = y;
     this.cols = cols;
     this.rows = rows;
 

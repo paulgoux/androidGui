@@ -1,7 +1,7 @@
 class TextBox {
 
   int id, toggle, cols, rows, size, t, timer = 20, blkrate = 30, t1 = blkrate, t2 = blkrate, start, end, hcount, index, lindex, vindex = -1, hindex = -1, windex, vpos = 0, hpos, sltcounter, vcount = 0,delay=10,delay2 = 5,maxCount = 51;
-  float x, y, w, h, textsize = 10, twidth = 0, posx, posy, tposx, tposy, strposx, strposy, tbwidth, strwidth, strwidth2, strheight, cursorx, cursory, crwidth, totalwidth,xoff,
+  float x, y, w, h, bx,by,bw,bh, textsize = 10, twidth = 0, posx, posy, tposx, tposy, strposx, strposy, tbwidth, strwidth, strwidth2, strheight, cursorx, cursory, crwidth, totalwidth,xoff,
         xOffset,yOffset;
   String label, text, label_backup, cboard = "";
   boolean drag, resize, hover, border, background, hidden, fill = true, init, ready, label_bool, clear, copied, tbox = false, full, tsize,dragtext,mdown,onfocus,showLabel,parentCanvas,firstPress,getChar;
@@ -29,6 +29,10 @@ class TextBox {
     y = Y;
     w = WW;
     h = HH;
+    bx = x;
+    by = y;
+    bw = w;
+    bh = h;
     cols = Cols;
     totalwidth = w;
     size = textbox.size();
@@ -43,6 +47,10 @@ class TextBox {
     y = Y;
     w = WW;
     h = HH;
+    bx = x;
+    by = y;
+    bw = w;
+    bh = h;
     cols = Cols;
 
     totalwidth = w;
@@ -63,6 +71,11 @@ class TextBox {
     y = Y;
     w = WW;
     h = HH;
+    bx = x;
+    by = y;
+    bw = w;
+    bh = h;
+    
     cols = Cols;
     totalwidth = w;
     size = textbox.size();
